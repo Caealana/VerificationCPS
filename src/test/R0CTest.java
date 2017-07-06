@@ -124,11 +124,22 @@ public class R0CTest {
 		Set<Integer> slice = new HashSet<Integer>();
 		boolean[] visited = new boolean[1000];
 		Set<String> criterionVars = new HashSet<String>();
+		System.out.println(cfg.getEdges().get(n6));
+		//edges
+		//4 to 5 and 6
+		//5 to 7
+		//6 to 7
 		criterionVars.add("c");
 		collectDep test = new collectDep(cfg,depList, slice,
 				visited, n6, criterionVars);
 		test.buildDep();
 		System.out.println(test.getR0C());
+		//System.out.println(test.getR0CSet(n2));
+		System.out.println(test.getR0CSet(n4));
+		//prints hashmap. node to string.
+		
+		//for particular def and ref, add the statement which it happened....save the line, integer line number ...
+		//from that recreate and print out slice
 
 	}
 

@@ -21,6 +21,8 @@ public class collectDep { //collect dependencies
 	private Set<String> criterionVars = new HashSet<String>();
 	private HashMap<Integer, Set<Node>> bNodesInBlocks;
 	private HashMap<Node, Set<String>> R0C;
+	private Set<Node> S0C; //set of all nodes i that define
+	//a variable v that is a relevant at a CFG-successor of i.
 	
 	public collectDep(ControlFlowGraph cfg, HashMap<String, Set<Object>> depList, Set<Integer> slice,
 			boolean[] visited, Node criterionNode, Set<String> criterionVars) {
@@ -43,22 +45,13 @@ public class collectDep { //collect dependencies
 		return R0C;
 	}
 	
-	public void buildDep(){
-		//based off of weiser's static slicing alg
-		//source: http://www.cse.buffalo.edu/LRG/CSE705/Papers/Weiser-Static-Slicing.pdf
+	public Set<String> getR0CSet(Node node){
+		return R0C.get(node);
+	}
+	
+	public HashMap<Node, Set<String>> buildR0C(List<Node> queue){
+		//does it actually go through every edge?
 		
-		//build R0C
-		List<Node> queue = new ArrayList<Node>();
-		Iterator<Node> keyIt = revCFG.getKeyIterator();
-		while(keyIt.hasNext()) {
-			Node n = keyIt.next();
-			// go through the nodes
-			//if node isn't starting node
-			/*if(n.equals(new Node(false), false)) {
-				queue.add(n); //add to queue from iterator that goes through cfg
-			}*/
-			queue.add(n);
-		}
 		Node after = null;
 		Node current;
 		boolean start = false;
@@ -85,6 +78,8 @@ public class collectDep { //collect dependencies
 			}
 			
 			else if (start == true){
+				System.out.println(current);
+				System.out.println(after);
 				//current node R0c based on R0c of node after it
 				//case 2a
 				//n comes before m
@@ -122,9 +117,39 @@ public class collectDep { //collect dependencies
 				}
 				R0C.put(current, v);
 
-				
+				after = current;
 			}
 			
 		}
+		return R0C;
+	}
+	
+	public Set<Node> buildS0C(HashMap<Node, Set<String>> R0C){
+		return null;
+	}
+	
+	public void buildDep(){
+		//based off of weiser's static slicing alg
+		//source: http://www.cse.buffalo.edu/LRG/CSE705/Papers/Weiser-Static-Slicing.pdf
+		
+		//build R0C
+		List<Node> queue = new ArrayList<Node>();
+		Iterator<Node> keyIt = revCFG.getKeyIterator();
+		while(keyIt.hasNext()) {
+			//don't think this is really going through all edges? may have to alter this
+			Node n = keyIt.next();
+			// go through the nodes
+			//if node isn't starting node
+			/*if(n.equals(new Node(false), false)) {
+				queue.add(n); //add to queue from iterator that goes through cfg
+			}*/
+			queue.add(n);
+		}
+		
+		//build R0C
+		HashMap<Node, Set<String>> localR0C = buildR0C(queue);
+		
+		//build S0C
+		
 	}
 }
