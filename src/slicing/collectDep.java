@@ -153,9 +153,9 @@ public class collectDep { //collect dependencies
 	//INFL(B) of a branch statement b ...set of statements control dependent on b...the statements that are part of the if/while/etc.
 	public void buildBkC(Set<BranchNode> branchNodes){
 		System.out.println(branchNodes);
-		BranchNode[] bnArray = (BranchNode[]) branchNodes.toArray();
+		Object[] bnArray = branchNodes.toArray();
 		for(int i = 0; i < bnArray.length; i++){
-			BranchNode currentBn = bnArray[i];
+			BranchNode currentBn = (BranchNode) bnArray[i];
 			Set<Node> INFLSet = currentBn.getINFL();
 			Node[] INFLarr = (Node[]) INFLSet.toArray();
 			for(int j = 0; j < INFLarr.length; j++){

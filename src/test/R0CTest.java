@@ -134,9 +134,10 @@ public class R0CTest {
 		//4 to 5 and 6
 		//5 to 7
 		//6 to 7
-		criterionVars.add("c");
+		criterionVars.add("a");
+		criterionVars.add("b");
 		collectDep test = new collectDep(cfg,depList, slice,
-				visited, n6, criterionVars);
+				visited, n8, criterionVars);
 		test.buildDep();
 		System.out.println(test.getR0C());
 		//System.out.println(test.getR0CSet(n2));
