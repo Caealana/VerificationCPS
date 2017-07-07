@@ -1,5 +1,6 @@
 package slicing;
 
+import graphRepresentation.BranchNode;
 import graphRepresentation.ControlFlowGraph;
 import graphRepresentation.Node;
 
@@ -23,6 +24,7 @@ public class collectDep { //collect dependencies
 	private HashMap<Node, Set<String>> R0C;
 	private Set<Node> S0C; //set of all nodes i that define
 	//a variable v that is a relevant at a CFG-successor of i.
+	private Set<Node> BkC;
 	
 	public collectDep(ControlFlowGraph cfg, HashMap<String, Set<Object>> depList, Set<Integer> slice,
 			boolean[] visited, Node criterionNode, Set<String> criterionVars) {
@@ -52,6 +54,10 @@ public class collectDep { //collect dependencies
 	
 	public Set<Node> getS0C(){
 		return S0C;
+	}
+	
+	public Set<Node> getBkC(){
+		return BkC;
 	}
 	
 	public void buildR0CS0C(List<Node> queue){
@@ -143,8 +149,21 @@ public class collectDep { //collect dependencies
 		}
 	}
 	
-	public Set<Node> buildS0C(HashMap<Node, Set<String>> R0C){
-		return null;
+	//Bkc such that...node is in SkC, node is INFL(b)
+	//INFL(B) of a branch statement b ...set of statements control dependent on b...the statements that are part of the if/while/etc.
+	public void buildBkC(Set<BranchNode> branchNodes){
+		System.out.println(branchNodes);
+		BranchNode[] bnArray = (BranchNode[]) branchNodes.toArray();
+		for(int i = 0; i < bnArray.length; i++){
+			BranchNode currentBn = bnArray[i];
+			Set<Node> INFLSet = currentBn.getINFL();
+			Node[] INFLarr = (Node[]) INFLSet.toArray();
+			for(int j = 0; j < INFLarr.length; j++){
+				if(S0C.contains(INFLarr[j])){
+					BkC.add(INFLarr[j]);
+				}
+			}
+		}
 	}
 	
 	public void buildDep(){
@@ -168,7 +187,8 @@ public class collectDep { //collect dependencies
 		//build R0C
 		buildR0CS0C(queue);
 		
-		//build S0C
+		//build BkC
+		buildBkC(revCFG.getBranchNodes());
 		
 	}
 }

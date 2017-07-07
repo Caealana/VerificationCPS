@@ -5,14 +5,17 @@ import java.util.*;
 public class ControlFlowGraph {
 	private HashMap<Node, List<Node>> edges;
 	private int nodeCount;
+	private Set<BranchNode> branchNodes;
 	
 	public ControlFlowGraph() {
 		edges = new HashMap<Node, List<Node>>();
 		nodeCount = 0;
+
 	}
 	
 	public ControlFlowGraph(HashMap<Node, List<Node>> edges) {
 		this.edges = edges;
+		branchNodes = new HashSet<BranchNode>();
 	}
 	
 	public HashMap<Node, List<Node>> getEdges() {
@@ -34,6 +37,19 @@ public class ControlFlowGraph {
 			}
 		}
 		return null;
+	}
+	
+	public void setBranchNodes(Set<BranchNode> bn){
+		branchNodes = bn;
+	}
+	
+	public void addBranchNode(BranchNode bn){
+		System.out.println(branchNodes);
+		branchNodes.add(bn);
+	}
+	
+	public Set<BranchNode> getBranchNodes(){
+		return branchNodes;
 	}
 	
 	public int countNodes() {

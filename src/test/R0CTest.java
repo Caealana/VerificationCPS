@@ -2,6 +2,7 @@ package test;
 
 import graphRepresentation.ControlFlowGraph;
 import graphRepresentation.Node;
+import graphRepresentation.BranchNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,17 +48,20 @@ public class R0CTest {
 		ref = new ArrayList<String>();
 		def = new ArrayList<String>();
 		ref.add("n");
-		Node n4 = new Node("if", ref, def, 4);
+		Set<Node> INFL = new HashSet<Node>();
+		BranchNode n4 = new BranchNode("if", ref, def, 4, INFL);
 		
 		ref = new ArrayList<String>();
 		def = new ArrayList<String>();
 		def.add("a");
 		Node n5 = new Node("assign", ref, def, 5);
+		n4.addINFL(n5);
 		
 		ref = new ArrayList<String>();
 		def = new ArrayList<String>();
 		def.add("b");
 		Node n6 = new Node("assign", ref, def, 6);
+		n4.addINFL(n6);
 		
 		ref = new ArrayList<String>();
 		def = new ArrayList<String>();
@@ -120,6 +124,7 @@ public class R0CTest {
 		final int REPS = 5000;
 		
 		ControlFlowGraph cfg = new ControlFlowGraph(edges);
+		cfg.addBranchNode(n4);
 		HashMap<String, Set<Object>> depList = new HashMap<String, Set<Object>>();
 		Set<Integer> slice = new HashSet<Integer>();
 		boolean[] visited = new boolean[1000];
@@ -143,6 +148,7 @@ public class R0CTest {
 		//walk back using def/ref sequence
 		
 		System.out.println(test.getS0C());
+		System.out.println(test.getBkC());
 
 	}
 
