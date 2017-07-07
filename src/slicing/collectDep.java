@@ -34,6 +34,7 @@ public class collectDep { //collect dependencies
 		this.visited = visited;
 		bNodesInBlocks = new HashMap<Integer, Set<Node>>();
 		this.R0C = new HashMap<Node, Set<String>>();
+		this.S0C = new HashSet<Node>();
 
 	}
 	
@@ -49,7 +50,11 @@ public class collectDep { //collect dependencies
 		return R0C.get(node);
 	}
 	
-	public HashMap<Node, Set<String>> buildR0C(List<Node> queue){
+	public Set<Node> getS0C(){
+		return S0C;
+	}
+	
+	public void buildR0CS0C(List<Node> queue){
 		//does it actually go through every edge?
 		
 		Node after = null;
@@ -65,6 +70,12 @@ public class collectDep { //collect dependencies
 				//the criterion node is the ENDING node
 				//we want to start saving dependences from this point on
 				System.out.println("found criterion node");
+				
+				//do we add slicing criterion ending node to S0C?
+				//my initial answer is yes
+				S0C.add(current);
+				
+				//R0C case 1
 				if(criterionVars.isEmpty() == false){
 					R0C.put(current, criterionVars); //R0C(i) = V when i = n
 				}
@@ -116,12 +127,20 @@ public class collectDep { //collect dependencies
 					}
 				}
 				R0C.put(current, v);
-
+				
+				//S0C
+				//intersection def(current) and R0C(after) not empty, then add current to S0C
+				Set<String> S0CTest = new HashSet<String>(current.getDef());
+				S0CTest.retainAll(R0C.get(after));
+				if(S0CTest.isEmpty() == false){
+					S0C.add(current);
+				}
+				
+				
 				after = current;
 			}
 			
 		}
-		return R0C;
 	}
 	
 	public Set<Node> buildS0C(HashMap<Node, Set<String>> R0C){
@@ -147,7 +166,7 @@ public class collectDep { //collect dependencies
 		}
 		
 		//build R0C
-		HashMap<Node, Set<String>> localR0C = buildR0C(queue);
+		buildR0CS0C(queue);
 		
 		//build S0C
 		

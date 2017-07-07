@@ -140,6 +140,9 @@ public class R0CTest {
 		
 		//for particular def and ref, add the statement which it happened....save the line, integer line number ...
 		//from that recreate and print out slice
+		//walk back using def/ref sequence
+		
+		System.out.println(test.getS0C());
 
 	}
 
