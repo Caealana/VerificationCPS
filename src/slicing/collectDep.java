@@ -10,7 +10,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
+import java.util.Stack;
 
 
 public class collectDep { //collect dependencies
@@ -60,99 +62,116 @@ public class collectDep { //collect dependencies
 		return BkC;
 	}
 	
-	public void buildR0CS0C(List<Node> queue){
-		//does it actually go through every edge?
+	public void buildR0CS0C(Node endN, HashMap<Node, List<Node>> edges, int nodeCount){
+		
+		Stack<Node> dfs = new Stack(); //for dfs
+		boolean[] visited = new boolean[nodeCount]; //visited for each node
+		System.out.println(edges.keySet());
+		System.out.println(visited.length);
+		//initial visited set to false for all nodes
+		dfs.push(endN);
 		
 		Node after = null;
 		Node current;
 		boolean start = false;
-		System.out.println(queue.size());
-		while(queue.size() > 0) {
+		//System.out.println(queue.size());
+		while(dfs.empty() == false) {
 			//after building up q, we update dep list
-			current = queue.remove(0);
+			current = dfs.pop();
 			//not sure if my image of the graph is right...
+			System.out.println(current);
 			
-			if(criterionNode.equals(current)){
-				//the criterion node is the ENDING node
-				//we want to start saving dependences from this point on
-				System.out.println("found criterion node");
-				
-				//do we add slicing criterion ending node to S0C?
-				//my initial answer is yes
-				S0C.add(current);
-				
-				//R0C case 1
-				if(criterionVars.isEmpty() == false){
-					R0C.put(current, criterionVars); //R0C(i) = V when i = n
-				}
-				else{
-					//case of empty criterion - no vars
-					R0C.put(current, Collections.emptySet());
-					System.out.println("empty set");
-				}
-				start = true;
-				after = current;
-			}
-			
-			else if (start == true){
-				System.out.println(current);
-				System.out.println(after);
-				//current node R0c based on R0c of node after it
-				//case 2a
-				//n comes before m
-				//v is in REF(n), a w in both DEF(n) and R0C(m)
-				//how do we handle if we are using an empty set from R0C?
-				
-				//w both in DEF(n) and R0C(m)
-				ArrayList<String> defn = current.getDef();
-				for(int i = 0; i <defn.size(); i ++){
-					//go through the vars in DEF(n)
-					String varW= defn.get(i);
-					Set<String> R0Cm = R0C.get(after);
-					//see if the var you found is contained withinR0C(m)
-					if(R0Cm.contains(varW)){
-						//if it is...add all refn to v
-						Set<String> refn = new HashSet<String>(current.getRef());
-						R0C.put(current, refn);
-					}
+			//dfs push new nodes onto stack
+			if(visited[current.getIndex()] == false){
+				visited[current.getIndex()] = true;
+				List<Node> currentEdges = edges.get(current);
+				Iterator<Node> edgeIt = currentEdges.iterator();
+				while(edgeIt.hasNext()){
+					dfs.push(edgeIt.next());
 				}
 				
-				//case 2b
-				//n before m
-				//v NOT IN Def(n), v is in R0C(m)
-				ArrayList<String> DEFn = current.getDef(); //DEF(n)
-				Set<String> R0Cm = R0C.get(after); //R0C(m)
-				Object[] R0CmArr = R0Cm.toArray();
-				Set<String> v = new HashSet<String>(); //vars to add to dep list
-				//go through vars in R0C(m)
-				for(int k = 0; k < R0CmArr.length; k++){
-					String var = (String) R0CmArr[k]; //v is in R0C(m)
-					if(DEFn.contains(var) == false){
-						//v is not in DEF(n)
-						v.add(var);
-					}
-				}
-				R0C.put(current, v);
-				
-				//S0C
-				//intersection def(current) and R0C(after) not empty, then add current to S0C
-				Set<String> S0CTest = new HashSet<String>(current.getDef());
-				S0CTest.retainAll(R0C.get(after));
-				if(S0CTest.isEmpty() == false){
+				//dep list check points
+				if(criterionNode.equals(current)){
+					//the criterion node is the ENDING node
+					//we want to start saving dependences from this point on
+					System.out.println("found criterion node");
+					
+					//do we add slicing criterion ending node to S0C?
+					//my initial answer is yes
 					S0C.add(current);
+					
+					//R0C case 1
+					if(criterionVars.isEmpty() == false){
+						R0C.put(current, criterionVars); //R0C(i) = V when i = n
+					}
+					else{
+						//case of empty criterion - no vars
+						R0C.put(current, Collections.emptySet());
+						//System.out.println("empty set");
+					}
+					start = true;
+					after = current;
 				}
 				
-				
-				after = current;
+				else if (start == true){
+					//System.out.println(current);
+					//System.out.println(after);
+					//current node R0c based on R0c of node after it
+					//case 2a
+					//n comes before m
+					//v is in REF(n), a w in both DEF(n) and R0C(m)
+					//how do we handle if we are using an empty set from R0C?
+					
+					//w both in DEF(n) and R0C(m)
+					ArrayList<String> defn = current.getDef();
+					for(int i = 0; i <defn.size(); i ++){
+						//go through the vars in DEF(n)
+						String varW= defn.get(i);
+						Set<String> R0Cm = R0C.get(after);
+						//see if the var you found is contained withinR0C(m)
+						if(R0Cm.contains(varW)){
+							//if it is...add all refn to v
+							Set<String> refn = new HashSet<String>(current.getRef());
+							R0C.put(current, refn);
+						}
+					}
+					
+					//case 2b
+					//n before m
+					//v NOT IN Def(n), v is in R0C(m)
+					ArrayList<String> DEFn = current.getDef(); //DEF(n)
+					Set<String> R0Cm = R0C.get(after); //R0C(m)
+					Object[] R0CmArr = R0Cm.toArray();
+					Set<String> v = new HashSet<String>(); //vars to add to dep list
+					//go through vars in R0C(m)
+					for(int k = 0; k < R0CmArr.length; k++){
+						String var = (String) R0CmArr[k]; //v is in R0C(m)
+						if(DEFn.contains(var) == false){
+							//v is not in DEF(n)
+							v.add(var);
+						}
+					}
+					R0C.put(current, v);
+					
+					//S0C
+					//intersection def(current) and R0C(after) not empty, then add current to S0C
+					Set<String> S0CTest = new HashSet<String>(current.getDef());
+					S0CTest.retainAll(R0C.get(after));
+					if(S0CTest.isEmpty() == false){
+						S0C.add(current);
+					}
+					
+					
+					after = current;
+				}
 			}
-			
 		}
 	}
 	
 	//Bkc such that...node is in SkC, node is INFL(b)
 	//INFL(B) of a branch statement b ...set of statements control dependent on b...the statements that are part of the if/while/etc.
 	public void buildBkC(Set<BranchNode> branchNodes){
-		System.out.println(branchNodes);
+		//System.out.println(branchNodes);
 		Object[] bnArray = branchNodes.toArray();
 		for(int i = 0; i < bnArray.length; i++){
 			BranchNode currentBn = (BranchNode) bnArray[i];
@@ -184,8 +203,22 @@ public class collectDep { //collect dependencies
 			queue.add(n);
 		}
 		
+		//dfs through statements
+		HashMap<Node, List<Node>> edges = revCFG.getEdges();
+		Iterator<Node> nodes = edges.keySet().iterator(); //nodes
+		Node current = null;
+		while(nodes.hasNext()){
+			current = nodes.next();
+			if(current.getType() == "stop"){ //ending node...go backwards from here
+				break; //we found the node to start at
+			}
+		}
+		
 		//build R0C
-		buildR0CS0C(queue);
+		if(current == null){
+			System.out.println("current node is null");
+		}
+		buildR0CS0C(current, edges, revCFG.countNodes());
 		
 		//build BkC
 		buildBkC(revCFG.getBranchNodes());

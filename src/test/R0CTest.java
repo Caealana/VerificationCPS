@@ -129,7 +129,7 @@ public class R0CTest {
 		Set<Integer> slice = new HashSet<Integer>();
 		boolean[] visited = new boolean[1000];
 		Set<String> criterionVars = new HashSet<String>();
-		System.out.println(cfg.getEdges().get(n6));
+		//System.out.println(cfg.getEdges().get(n6));
 		//edges
 		//4 to 5 and 6
 		//5 to 7
@@ -137,7 +137,7 @@ public class R0CTest {
 		criterionVars.add("a");
 		criterionVars.add("b");
 		collectDep test = new collectDep(cfg,depList, slice,
-				visited, n8, criterionVars);
+				visited, n6, criterionVars);
 		test.buildDep();
 		System.out.println(test.getR0C());
 		//System.out.println(test.getR0CSet(n2));
