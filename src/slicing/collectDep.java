@@ -16,6 +16,7 @@ import java.util.Stack;
 
 
 public class collectDep { //collect dependencies
+	private ControlFlowGraph CFG;
 	private ControlFlowGraph revCFG;
 	private HashMap<String, Set<Object>> depList; //in test 1, they give an empty hashmap dep list
 	private Set<Integer> slice;
@@ -27,10 +28,12 @@ public class collectDep { //collect dependencies
 	private Set<Node> S0C; //set of all nodes i that define
 	//a variable v that is a relevant at a CFG-successor of i.
 	private Set<Node> BkC;
+	private int nodeCount;
 	
 	public collectDep(ControlFlowGraph cfg, HashMap<String, Set<Object>> depList, Set<Integer> slice,
-			boolean[] visited, Node criterionNode, Set<String> criterionVars) {
+			boolean[] visited, Node criterionNode, Set<String> criterionVars, int nodeCount) {
 		revCFG = new ControlFlowGraph(cfg.getReversedEdges());
+		this.CFG = cfg;
 		this.depList = depList;
 		this.slice = slice;
 		this.criterionNode = criterionNode;
@@ -39,7 +42,7 @@ public class collectDep { //collect dependencies
 		bNodesInBlocks = new HashMap<Integer, Set<Node>>();
 		this.R0C = new HashMap<Node, Set<String>>();
 		this.S0C = new HashSet<Node>();
-
+		this.nodeCount = nodeCount;
 	}
 	
 	public ControlFlowGraph getCFG() {
@@ -62,7 +65,7 @@ public class collectDep { //collect dependencies
 		return BkC;
 	}
 	
-	public void buildR0CS0C(Node endN, HashMap<Node, List<Node>> edges, int nodeCount){
+	public void buildR0CS0C(Node endN, HashMap<Node, List<Node>> edges){
 		
 		Stack<Node> dfs = new Stack(); //for dfs
 		boolean[] visited = new boolean[nodeCount]; //visited for each node
@@ -85,11 +88,13 @@ public class collectDep { //collect dependencies
 			if(visited[current.getIndex()] == false){
 				visited[current.getIndex()] = true;
 				List<Node> currentEdges = edges.get(current);
-				Iterator<Node> edgeIt = currentEdges.iterator();
-				while(edgeIt.hasNext()){
-					dfs.push(edgeIt.next());
+				if(currentEdges != null){
+					//push edges to stack
+					Iterator<Node> edgeIt = currentEdges.iterator();
+					while(edgeIt.hasNext()){
+						dfs.push(edgeIt.next());
+					}
 				}
-				
 				//dep list check points
 				if(criterionNode.equals(current)){
 					//the criterion node is the ENDING node
@@ -218,7 +223,7 @@ public class collectDep { //collect dependencies
 		if(current == null){
 			System.out.println("current node is null");
 		}
-		buildR0CS0C(current, edges, revCFG.countNodes());
+		buildR0CS0C(current, edges);
 		
 		//build BkC
 		buildBkC(revCFG.getBranchNodes());
