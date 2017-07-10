@@ -10,6 +10,7 @@ public class ControlFlowGraph {
 	public ControlFlowGraph() {
 		edges = new HashMap<Node, List<Node>>();
 		nodeCount = 0;
+		branchNodes = new HashSet<BranchNode>();
 
 	}
 	
@@ -44,11 +45,15 @@ public class ControlFlowGraph {
 	}
 	
 	public void addBranchNode(BranchNode bn){
-		System.out.println(branchNodes);
+		//System.out.println(branchNodes);
 		branchNodes.add(bn);
+		System.out.println("Adding branch node");
+		System.out.println(branchNodes);
 	}
 	
 	public Set<BranchNode> getBranchNodes(){
+		//System.out.println("getBranchNodes");
+		//System.out.println(branchNodes);
 		return branchNodes;
 	}
 	

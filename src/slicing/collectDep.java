@@ -42,6 +42,7 @@ public class collectDep { //collect dependencies
 		bNodesInBlocks = new HashMap<Integer, Set<Node>>();
 		this.R0C = new HashMap<Node, Set<String>>();
 		this.S0C = new HashSet<Node>();
+		this.BkC = new HashSet<Node>();
 		this.nodeCount = nodeCount;
 	}
 	
@@ -69,7 +70,7 @@ public class collectDep { //collect dependencies
 		
 		Stack<Node> dfs = new Stack(); //for dfs
 		boolean[] visited = new boolean[nodeCount]; //visited for each node
-		System.out.println(edges.keySet());
+		//System.out.println(edges.keySet());
 		System.out.println(visited.length);
 		//initial visited set to false for all nodes
 		dfs.push(endN);
@@ -82,7 +83,7 @@ public class collectDep { //collect dependencies
 			//after building up q, we update dep list
 			current = dfs.pop();
 			//not sure if my image of the graph is right...
-			System.out.println(current);
+			//System.out.println(current);
 			
 			//dfs push new nodes onto stack
 			if(visited[current.getIndex()] == false){
@@ -160,10 +161,14 @@ public class collectDep { //collect dependencies
 					
 					//S0C
 					//intersection def(current) and R0C(after) not empty, then add current to S0C
-					Set<String> S0CTest = new HashSet<String>(current.getDef());
+					Set<String> S0CTest = new HashSet<String>(current.getDef());//def(current)
 					S0CTest.retainAll(R0C.get(after));
+					System.out.print("S0C Test");
+					System.out.println(S0CTest);
 					if(S0CTest.isEmpty() == false){
 						S0C.add(current);
+						System.out.println("Current Node ");
+						System.out.print(current);
 					}
 					
 					
@@ -178,13 +183,18 @@ public class collectDep { //collect dependencies
 	public void buildBkC(Set<BranchNode> branchNodes){
 		//System.out.println(branchNodes);
 		Object[] bnArray = branchNodes.toArray();
+		System.out.println("bnArray Length");
+		System.out.println(bnArray.length);
 		for(int i = 0; i < bnArray.length; i++){
 			BranchNode currentBn = (BranchNode) bnArray[i];
 			Set<Node> INFLSet = currentBn.getINFL();
-			Node[] INFLarr = (Node[]) INFLSet.toArray();
+			Object[] INFLarr =  INFLSet.toArray();
+			System.out.println("INFLarray");
+			System.out.print(INFLarr);
 			for(int j = 0; j < INFLarr.length; j++){
-				if(S0C.contains(INFLarr[j])){
-					BkC.add(INFLarr[j]);
+				Node inflNode = (Node) INFLarr[j];
+				if(S0C.contains(inflNode)){
+					BkC.add(inflNode);
 				}
 			}
 		}
@@ -226,7 +236,8 @@ public class collectDep { //collect dependencies
 		buildR0CS0C(current, edges);
 		
 		//build BkC
-		buildBkC(revCFG.getBranchNodes());
+		//System.out.println("revCFG get branchNodes");
+		buildBkC(CFG.getBranchNodes());
 		
 	}
 }

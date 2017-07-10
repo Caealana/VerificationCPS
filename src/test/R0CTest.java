@@ -151,7 +151,7 @@ public class R0CTest {
 		test.buildDep();
 		System.out.println(test.getR0C());
 		//System.out.println(test.getR0CSet(n2));
-		System.out.println(test.getR0CSet(n4));
+		//System.out.println(test.getR0CSet(n4));
 		//prints hashmap. node to string.
 		
 		//for particular def and ref, add the statement which it happened....save the line, integer line number ...
