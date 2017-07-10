@@ -29,6 +29,7 @@ public class collectDep { //collect dependencies
 	//a variable v that is a relevant at a CFG-successor of i.
 	private Set<Node> BkC;
 	private int nodeCount;
+	private HashMap<Node, Set<String>> Rk1C;
 	
 	public collectDep(ControlFlowGraph cfg, HashMap<String, Set<Object>> depList, Set<Integer> slice,
 			boolean[] visited, Node criterionNode, Set<String> criterionVars, int nodeCount) {
@@ -44,6 +45,7 @@ public class collectDep { //collect dependencies
 		this.S0C = new HashSet<Node>();
 		this.BkC = new HashSet<Node>();
 		this.nodeCount = nodeCount;
+		this.Rk1C = new HashMap<Node, Set<String>>();
 	}
 	
 	public ControlFlowGraph getCFG() {
@@ -66,7 +68,7 @@ public class collectDep { //collect dependencies
 		return BkC;
 	}
 	
-	public void buildR0CS0C(Node endN, HashMap<Node, List<Node>> edges){
+	public void buildR0CS0C(Node endN, HashMap<Node, List<Node>> edges, Set<String> vars){
 		
 		Stack<Node> dfs = new Stack(); //for dfs
 		boolean[] visited = new boolean[nodeCount]; //visited for each node
@@ -107,8 +109,8 @@ public class collectDep { //collect dependencies
 					S0C.add(current);
 					
 					//R0C case 1
-					if(criterionVars.isEmpty() == false){
-						R0C.put(current, criterionVars); //R0C(i) = V when i = n
+					if(vars.isEmpty() == false){
+						R0C.put(current, vars); //R0C(i) = V when i = n
 					}
 					else{
 						//case of empty criterion - no vars
@@ -200,6 +202,13 @@ public class collectDep { //collect dependencies
 		}
 	}
 	
+	//rk1C contains vars that have a transitive data dependence on nodes in BkC
+	//do R0C, S0C on new criteria (branch, REF(b))
+	//each branch node i suppose
+	public void buildRk1C(){
+		//call buildR0CS0C on branch node as end node, but set new criterion variables as REF(B)
+	}
+	
 	public void buildDep(){
 		//based off of weiser's static slicing alg
 		//source: http://www.cse.buffalo.edu/LRG/CSE705/Papers/Weiser-Static-Slicing.pdf
@@ -233,7 +242,7 @@ public class collectDep { //collect dependencies
 		if(current == null){
 			System.out.println("current node is null");
 		}
-		buildR0CS0C(current, edges);
+		buildR0CS0C(current, edges, criterionVars);
 		
 		//build BkC
 		//System.out.println("revCFG get branchNodes");
