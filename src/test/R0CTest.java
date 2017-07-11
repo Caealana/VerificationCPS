@@ -25,8 +25,9 @@ public class R0CTest {
 	 * end			7
 	 * c = b		8
 	 * stop			9
+	 * @throws Exception 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		HashMap<Node, List<Node>> edges = new HashMap<Node, List<Node>>();
 		Node start = new Node(true);
 		int nodeCount = 1;
@@ -162,7 +163,14 @@ public class R0CTest {
 		System.out.println(test.getBkC());
 		System.out.println(test.getRk1C());
 		System.out.println(test.getSk1C());
-
+		
+		
+		//test system with null criterion -throws exception
+		//collectDep nullTest = new collectDep(cfg, depList, slice, visited, null, null, nodeCount);
+		//nullTest.buildDep();
+		/*nullTest.getS0C();
+		nullTest.getR0C();
+		nullTest.get*/
 	}
 
 }

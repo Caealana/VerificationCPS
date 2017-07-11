@@ -33,13 +33,11 @@ public class collectDep { //collect dependencies
 	private Set<Node> Sk1C;
 	
 	public collectDep(ControlFlowGraph cfg, HashMap<String, Set<Object>> depList, Set<Integer> slice,
-			boolean[] visited, Node criterionNode, Set<String> criterionVars, int nodeCount) {
+			boolean[] visited, Node criterionNode, Set<String> criterionVars, int nodeCount) throws Exception {
 		revCFG = new ControlFlowGraph(cfg.getReversedEdges());
 		this.CFG = cfg;
 		this.depList = depList;
 		this.slice = slice;
-		this.criterionNode = criterionNode;
-		this.criterionVars = criterionVars;
 		this.visited = visited;
 		bNodesInBlocks = new HashMap<Integer, Set<Node>>();
 		this.R0C = new HashMap<Node, Set<String>>();
@@ -48,6 +46,13 @@ public class collectDep { //collect dependencies
 		this.nodeCount = nodeCount;
 		this.Rk1C = new HashMap<Node, Set<String>>();
 		this.Sk1C = new HashSet<Node>();
+		if(criterionVars != null & criterionNode != null ){
+			this.criterionNode = criterionNode;
+			this.criterionVars = criterionVars;
+		}
+		else{
+			throw new Exception("Null value in slicing criterion.");
+		}
 	}
 	
 	public ControlFlowGraph getCFG() {
@@ -78,7 +83,9 @@ public class collectDep { //collect dependencies
 		return Sk1C;
 	}
 	
-	public void buildR0CS0C(Node endN, HashMap<Node, List<Node>> edges, Set<String> vars, boolean buildRk1C){
+	//
+	public void buildR0CS0C(Node endN, HashMap<Node, List<Node>> edges, Set<String> vars, boolean kPlus1){
+		//if slicing criterion is null, just throw an error
 		
 		Stack<Node> dfs = new Stack(); //for dfs
 		boolean[] visited = new boolean[nodeCount]; //visited for each node
@@ -116,7 +123,7 @@ public class collectDep { //collect dependencies
 					
 					//do we add slicing criterion ending node to S0C?
 					//my initial answer is yes
-					if(buildRk1C == false){
+					if(kPlus1 == false){
 						S0C.add(current);
 					}
 					else{
@@ -124,7 +131,7 @@ public class collectDep { //collect dependencies
 					}
 					//R0C case 1
 					if(vars.isEmpty() == false){
-						if(buildRk1C == false){ //checks if we are adding to Rk1C based on branch nodes
+						if(kPlus1 == false){ //checks if we are adding to Rk1C based on branch nodes
 							R0C.put(current, vars); //R0C(i) = V when i = n
 						}
 						else{
@@ -133,7 +140,7 @@ public class collectDep { //collect dependencies
 					}
 					else{
 						//case of empty criterion - no vars
-						if(buildRk1C == false){
+						if(kPlus1 == false){
 							R0C.put(current, Collections.emptySet());
 						}
 						else{
@@ -164,7 +171,7 @@ public class collectDep { //collect dependencies
 						if(R0Cm.contains(varW)){
 							//if it is...add all refn to v
 							Set<String> refn = new HashSet<String>(current.getRef());
-							if(buildRk1C == false){
+							if(kPlus1 == false){
 								R0C.put(current, refn);
 							}
 							else{
@@ -188,7 +195,7 @@ public class collectDep { //collect dependencies
 							v.add(var);
 						}
 					}
-					if(buildRk1C == false){
+					if(kPlus1 == false){
 						R0C.put(current, v);
 					}
 					else{
@@ -196,7 +203,7 @@ public class collectDep { //collect dependencies
 					}
 					//S0C
 					//intersection def(current) and R0C(after) not empty, then add current to S0C
-					if(buildRk1C == false){
+					if(kPlus1 == false){
 						Set<String> S0CTest = new HashSet<String>(current.getDef());//def(current)
 						S0CTest.retainAll(R0C.get(after));
 						//System.out.print("S0C Test");
@@ -252,7 +259,7 @@ public class collectDep { //collect dependencies
 	//rk1C contains vars that have a transitive data dependence on nodes in BkC
 	//do R0C, S0C on new criteria (branch, REF(b))
 	//each branch node i suppose
-	public void buildRk1C(HashMap<Node, List<Node>> edges){
+	public void buildkPlus1(HashMap<Node, List<Node>> edges){
 		//call buildR0CS0C on branch node as end node, but set new criterion variables as REF(B)
 		//need to save 
 		Object[] BkCArr = BkC.toArray();
@@ -311,7 +318,7 @@ public class collectDep { //collect dependencies
 		//System.out.println("revCFG get branchNodes");
 		buildBkC(CFG.getBranchNodes());
 		
-		//build Rk+1C
-		buildRk1C(edges);
+		//build build Rk+1C and Sk+1C
+		buildkPlus1(edges);
 	}
 }
