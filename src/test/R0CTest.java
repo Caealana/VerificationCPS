@@ -160,6 +160,7 @@ public class R0CTest {
 		
 		System.out.println(test.getS0C());
 		System.out.println(test.getBkC());
+		System.out.println(test.getRk1C());
 
 	}
 

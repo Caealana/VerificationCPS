@@ -68,7 +68,11 @@ public class collectDep { //collect dependencies
 		return BkC;
 	}
 	
-	public void buildR0CS0C(Node endN, HashMap<Node, List<Node>> edges, Set<String> vars){
+	public HashMap<Node, Set<String>> getRk1C(){
+		return Rk1C;
+	}
+	
+	public void buildR0CS0C(Node endN, HashMap<Node, List<Node>> edges, Set<String> vars, boolean buildRk1C){
 		
 		Stack<Node> dfs = new Stack(); //for dfs
 		boolean[] visited = new boolean[nodeCount]; //visited for each node
@@ -106,15 +110,26 @@ public class collectDep { //collect dependencies
 					
 					//do we add slicing criterion ending node to S0C?
 					//my initial answer is yes
-					S0C.add(current);
-					
+					if(buildRk1C == false){
+						S0C.add(current);
+					}
 					//R0C case 1
 					if(vars.isEmpty() == false){
-						R0C.put(current, vars); //R0C(i) = V when i = n
+						if(buildRk1C == false){ //checks if we are adding to Rk1C based on branch nodes
+							R0C.put(current, vars); //R0C(i) = V when i = n
+						}
+						else{
+							Rk1C.put(current, vars);
+						}
 					}
 					else{
 						//case of empty criterion - no vars
-						R0C.put(current, Collections.emptySet());
+						if(buildRk1C == false){
+							R0C.put(current, Collections.emptySet());
+						}
+						else{
+							Rk1C.put(current, Collections.emptySet());
+						}
 						//System.out.println("empty set");
 					}
 					start = true;
@@ -140,7 +155,12 @@ public class collectDep { //collect dependencies
 						if(R0Cm.contains(varW)){
 							//if it is...add all refn to v
 							Set<String> refn = new HashSet<String>(current.getRef());
-							R0C.put(current, refn);
+							if(buildRk1C == false){
+								R0C.put(current, refn);
+							}
+							else{
+								Rk1C.put(current, refn);
+							}
 						}
 					}
 					
@@ -159,20 +179,25 @@ public class collectDep { //collect dependencies
 							v.add(var);
 						}
 					}
-					R0C.put(current, v);
-					
+					if(buildRk1C == false){
+						R0C.put(current, v);
+					}
+					else{
+						Rk1C.put(current, v);
+					}
 					//S0C
 					//intersection def(current) and R0C(after) not empty, then add current to S0C
-					Set<String> S0CTest = new HashSet<String>(current.getDef());//def(current)
-					S0CTest.retainAll(R0C.get(after));
-					System.out.print("S0C Test");
-					System.out.println(S0CTest);
-					if(S0CTest.isEmpty() == false){
-						S0C.add(current);
-						System.out.println("Current Node ");
-						System.out.print(current);
+					if(buildRk1C == false){
+						Set<String> S0CTest = new HashSet<String>(current.getDef());//def(current)
+						S0CTest.retainAll(R0C.get(after));
+						System.out.print("S0C Test");
+						System.out.println(S0CTest);
+						if(S0CTest.isEmpty() == false){
+							S0C.add(current);
+							System.out.println("Current Node ");
+							System.out.print(current);
+						}
 					}
-					
 					
 					after = current;
 				}
@@ -205,8 +230,16 @@ public class collectDep { //collect dependencies
 	//rk1C contains vars that have a transitive data dependence on nodes in BkC
 	//do R0C, S0C on new criteria (branch, REF(b))
 	//each branch node i suppose
-	public void buildRk1C(){
+	public void buildRk1C(HashMap<Node, List<Node>> edges){
 		//call buildR0CS0C on branch node as end node, but set new criterion variables as REF(B)
+		//need to save 
+		Object[] BkCArr = BkC.toArray();
+		for(int i = 0; i <BkCArr.length; i++){
+			Node current = (Node)BkCArr[i];
+			Set<String> currentDef = new HashSet<String>(current.getDef()); 
+			buildR0CS0C(current, edges, currentDef, true );
+		}
+		//buildR0CS0C();
 	}
 	
 	public void buildDep(){
@@ -242,11 +275,13 @@ public class collectDep { //collect dependencies
 		if(current == null){
 			System.out.println("current node is null");
 		}
-		buildR0CS0C(current, edges, criterionVars);
+		buildR0CS0C(current, edges, criterionVars, false);
 		
 		//build BkC
 		//System.out.println("revCFG get branchNodes");
 		buildBkC(CFG.getBranchNodes());
 		
+		//build Rk+1C
+		buildRk1C(edges);
 	}
 }
