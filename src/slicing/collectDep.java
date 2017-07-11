@@ -30,6 +30,7 @@ public class collectDep { //collect dependencies
 	private Set<Node> BkC;
 	private int nodeCount;
 	private HashMap<Node, Set<String>> Rk1C;
+	private Set<Node> Sk1C;
 	
 	public collectDep(ControlFlowGraph cfg, HashMap<String, Set<Object>> depList, Set<Integer> slice,
 			boolean[] visited, Node criterionNode, Set<String> criterionVars, int nodeCount) {
@@ -46,6 +47,7 @@ public class collectDep { //collect dependencies
 		this.BkC = new HashSet<Node>();
 		this.nodeCount = nodeCount;
 		this.Rk1C = new HashMap<Node, Set<String>>();
+		this.Sk1C = new HashSet<Node>();
 	}
 	
 	public ControlFlowGraph getCFG() {
@@ -70,6 +72,10 @@ public class collectDep { //collect dependencies
 	
 	public HashMap<Node, Set<String>> getRk1C(){
 		return Rk1C;
+	}
+	
+	public Set<Node> getSk1C(){
+		return Sk1C;
 	}
 	
 	public void buildR0CS0C(Node endN, HashMap<Node, List<Node>> edges, Set<String> vars, boolean buildRk1C){
@@ -112,6 +118,9 @@ public class collectDep { //collect dependencies
 					//my initial answer is yes
 					if(buildRk1C == false){
 						S0C.add(current);
+					}
+					else{
+						Sk1C.add(current);
 					}
 					//R0C case 1
 					if(vars.isEmpty() == false){
@@ -190,19 +199,32 @@ public class collectDep { //collect dependencies
 					if(buildRk1C == false){
 						Set<String> S0CTest = new HashSet<String>(current.getDef());//def(current)
 						S0CTest.retainAll(R0C.get(after));
+						//System.out.print("S0C Test");
+						//System.out.println(S0CTest);
+						if(S0CTest.isEmpty() == false){
+							S0C.add(current);
+							//System.out.println("Current Node ");
+							//System.out.print(current);
+						}
+					}
+					else{
+						Set<String> S0CTest = new HashSet<String>(current.getDef());//def(current)
+						S0CTest.retainAll(Rk1C.get(after));
 						System.out.print("S0C Test");
 						System.out.println(S0CTest);
 						if(S0CTest.isEmpty() == false){
-							S0C.add(current);
+							Sk1C.add(current);
 							System.out.println("Current Node ");
 							System.out.print(current);
-						}
+						}						
 					}
 					
 					after = current;
 				}
 			}
 		}
+		Rk1C.putAll(R0C); // R k+1 C contains everything in S0C and R0C
+		//Sk1C.addAll(S0C);
 	}
 	
 	//Bkc such that...node is in SkC, node is INFL(b)
@@ -239,8 +261,16 @@ public class collectDep { //collect dependencies
 			Set<String> currentDef = new HashSet<String>(current.getDef()); 
 			buildR0CS0C(current, edges, currentDef, true );
 		}
-		//buildR0CS0C();
+
+		Sk1C.addAll(BkC); //Sk+1C contains everything in BkC
 	}
+	
+	/*This set
+	consists of the the nodes in Bk
+	C together with the nodes i that define a variable that is Rk1
+	C -relevant
+	to a CFG-successor j*/
+	//Sk1C is same as S0C except based on Rk1C instead of R0C
 	
 	public void buildDep(){
 		//based off of weiser's static slicing alg
