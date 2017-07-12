@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import slicing.DFS;
 import slicing.collectDep;
 
 public class R0CTest {
@@ -171,6 +172,10 @@ public class R0CTest {
 		/*nullTest.getS0C();
 		nullTest.getR0C();
 		nullTest.get*/
+		
+		//DFS test
+		DFS dfs = new DFS(test, cfg, nodeCount, start);
+		dfs.forwardDFS();
 	}
 
 }
