@@ -149,8 +149,9 @@ public class R0CTest {
 		criterionVars.add("a");
 		criterionVars.add("b");
 		collectDep test = new collectDep(cfg, depList, slice,
-				visited, n6, criterionVars, nodeCount);
+				visited, n8, criterionVars, nodeCount);
 		test.buildDep();
+		System.out.println("Get R0C: ");
 		System.out.println(test.getR0C());
 		//System.out.println(test.getR0CSet(n2));
 		//System.out.println(test.getR0CSet(n4));
@@ -160,6 +161,7 @@ public class R0CTest {
 		//from that recreate and print out slice
 		//walk back using def/ref sequence
 		
+		System.out.println("Get SOC");
 		System.out.println(test.getS0C());
 		System.out.println(test.getBkC());
 		System.out.println(test.getRk1C());
@@ -176,6 +178,12 @@ public class R0CTest {
 		//DFS test
 		DFS dfs = new DFS(test, cfg, nodeCount, start);
 		dfs.forwardDFS();
+		
+		//check if var has been declared yet - keep sets of declared variables
+		//each node has a set of vars that have been defined already
+		//in parallel, check for property during dfs.
+		//forward dfs traversal - and the backward slicing in parallel...when the two meet, then dfs forward does the limited/altered
+		//traversal
 	}
 
 }
