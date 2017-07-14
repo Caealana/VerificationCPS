@@ -47,8 +47,8 @@ public class ControlFlowGraph {
 	public void addBranchNode(BranchNode bn){
 		//System.out.println(branchNodes);
 		branchNodes.add(bn);
-		System.out.println("Adding branch node");
-		System.out.println(branchNodes);
+		//System.out.println("Adding branch node");
+		//System.out.println(branchNodes);
 	}
 	
 	public Set<BranchNode> getBranchNodes(){

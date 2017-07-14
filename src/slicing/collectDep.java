@@ -90,7 +90,7 @@ public class collectDep { //collect dependencies
 		Stack<Node> dfs = new Stack(); //for dfs
 		boolean[] visited = new boolean[nodeCount]; //visited for each node
 		//System.out.println(edges.keySet());
-		System.out.println(visited.length);
+		//System.out.println(visited.length);
 		//initial visited set to false for all nodes
 		dfs.push(endN);
 		
@@ -102,12 +102,15 @@ public class collectDep { //collect dependencies
 			//after building up q, we update dep list
 			current = dfs.pop();
 			//not sure if my image of the graph is right...
+			//System.out.println("current");
 			//System.out.println(current);
 			
 			//dfs push new nodes onto stack
 			if(visited[current.getIndex()] == false){
 				visited[current.getIndex()] = true;
 				List<Node> currentEdges = edges.get(current);
+				//System.out.println("current edges");
+				//System.out.println(currentEdges);
 				if(currentEdges != null){
 					//push edges to stack
 					Iterator<Node> edgeIt = currentEdges.iterator();
@@ -127,6 +130,7 @@ public class collectDep { //collect dependencies
 						S0C.add(current);
 					}
 					else{
+						System.out.println("adding criterion node to sk1c");
 						Sk1C.add(current);
 					}
 					//R0C case 1

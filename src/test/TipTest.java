@@ -1,13 +1,4 @@
 package test;
-
-import graphRepresentation.BranchNode;
-import graphRepresentation.ControlFlowGraph;
-import graphRepresentation.Node;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 /*Frank tip example slicing code
  * 
 (1) read(n);
@@ -23,6 +14,15 @@ import java.util.List;
 (9) write(sum);
 (10)write(product);
  */
+
+import graphRepresentation.BranchNode;
+import graphRepresentation.ControlFlowGraph;
+import graphRepresentation.Node;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import slicing.collectDep;
@@ -105,6 +105,11 @@ public class TipTest {
 		Node n10 = new Node("assign", ref, def, 10);
 		nodeCount++;
 		
+		ref = new ArrayList<String>();
+		def = new ArrayList<String>();
+		Node n11 = new Node("stop", ref, def, 11);
+		nodeCount++;
+		
 		List<Node> children = new ArrayList<Node>();
 		children.add(n1);
 		edges.put(start, children);
@@ -146,6 +151,10 @@ public class TipTest {
 		children.add(n10);
 		edges.put(n9, children);
 		
+		children = new ArrayList<Node>();
+		children.add(n11);
+		edges.put(n10, children);
+		
 		//get dep lists
 		ControlFlowGraph cfg = new ControlFlowGraph(edges);
 		cfg.addBranchNode(n5);
@@ -155,11 +164,18 @@ public class TipTest {
 		Set<String> criterionVars = new HashSet<String>();
 		criterionVars.add("sum");
 		collectDep test = new collectDep(cfg, depList, slice,
-				visited, n10, criterionVars, nodeCount);
+				visited, n11, criterionVars, nodeCount);
 		test.buildDep();
 		
 		//print out the dep lists
-		
+		System.out.println("R0C");
+		System.out.println(test.getR0C());
+		System.out.println("Rk1C");
+		System.out.println(test.getRk1C());
+		System.out.println("S0C");
+		System.out.println(test.getS0C());
+		System.out.println("Sk1C");
+		System.out.println(test.getSk1C());
 	}
 
 }
