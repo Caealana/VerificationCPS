@@ -205,53 +205,8 @@ public class collectDep { //collect dependencies
 					else{
 						Rk1C.put(current, v);
 					}
-					//S0C
-					//intersection def(current) and R0C(after) not empty, then add current to S0C
-					//not just direct edges...and node that is linked and comes after?
-					if(kPlus1 == false){
-						Set<String> S0CTest = new HashSet<String>(current.getDef());//def(current)
-						/*System.out.println("current node's def");
-						System.out.println(S0CTest);
-						System.out.println("R0C after");
-						System.out.println(R0C.get(after));*/
-						//do we do dfs starting from current node - to get all successors?
-						Stack<Node> S0CDfs = new Stack<Node>();
-						ArrayList<Node> visitedS0C = new ArrayList<Node>();
-						visitedS0C.add(current);
-						//push all the edges of current node to dfs
-						List<Node> edgesS0C = edges.get(current);
-						S0CDfs.addAll(edgesS0C);
-						Node successor; //node j (i->j)
-						while(S0CDfs.isEmpty() == false){
-							successor = S0CDfs.pop();
-							System.out.println("Successor Node: " + successor);
-							System.out.println("R0C: " + R0C);
-							//R0C is not built yet at this point
-							Set<String> R0CSuccessor = R0C.get(successor);
-							System.out.println("R0CSuccessor: " + R0CSuccessor);
-							System.out.println("S0CTest: " + S0CTest);
-							(R0CSuccessor).retainAll(S0CTest);
-							if(R0CSuccessor.isEmpty() == false){
-								//not just comparing
-								S0C.add(current);
-							}
-							//push edges to dfs
-							List<Node> successorEdges = edges.get(successor);
-							S0CDfs.addAll(successorEdges);
-							
-						}
-					}
-					else{
-						Set<String> S0CTest = new HashSet<String>(current.getDef());//def(current)
-						S0CTest.retainAll(Rk1C.get(after));
-						System.out.print("S0C Test");
-						System.out.println(S0CTest);
-						if(S0CTest.isEmpty() == false){
-							Sk1C.add(current);
-							System.out.println("Current Node ");
-							System.out.print(current);
-						}						
-					}
+
+					
 					
 					after = current;
 				}
@@ -259,6 +214,56 @@ public class collectDep { //collect dependencies
 		}
 		Rk1C.putAll(R0C); // R k+1 C contains everything in S0C and R0C
 		//Sk1C.addAll(S0C);
+	}
+	
+	public void buildS0C(){
+		//S0C
+		//intersection def(current) and R0C(after) not empty, then add current to S0C
+		//not just direct edges...and node that is linked and comes after?
+		if(kPlus1 == false){
+			Set<String> S0CTest = new HashSet<String>(current.getDef());//def(current)
+			/*System.out.println("current node's def");
+			System.out.println(S0CTest);
+			System.out.println("R0C after");
+			System.out.println(R0C.get(after));*/
+			//do we do dfs starting from current node - to get all successors?
+			Stack<Node> S0CDfs = new Stack<Node>();
+			ArrayList<Node> visitedS0C = new ArrayList<Node>();
+			visitedS0C.add(current);
+			//push all the edges of current node to dfs
+			List<Node> edgesS0C = edges.get(current);
+			S0CDfs.addAll(edgesS0C);
+			Node successor; //node j (i->j)
+			while(S0CDfs.isEmpty() == false){
+				successor = S0CDfs.pop();
+				System.out.println("Successor Node: " + successor);
+				System.out.println("R0C: " + R0C);
+				//R0C is not built yet at this point
+				Set<String> R0CSuccessor = R0C.get(successor);
+				System.out.println("R0CSuccessor: " + R0CSuccessor);
+				System.out.println("S0CTest: " + S0CTest);
+				(R0CSuccessor).retainAll(S0CTest);
+				if(R0CSuccessor.isEmpty() == false){
+					//not just comparing
+					S0C.add(current);
+				}
+				//push edges to dfs
+				List<Node> successorEdges = edges.get(successor);
+				S0CDfs.addAll(successorEdges);
+				
+			}
+		}
+		else{
+			Set<String> S0CTest = new HashSet<String>(current.getDef());//def(current)
+			S0CTest.retainAll(Rk1C.get(after));
+			System.out.print("S0C Test");
+			System.out.println(S0CTest);
+			if(S0CTest.isEmpty() == false){
+				Sk1C.add(current);
+				System.out.println("Current Node ");
+				System.out.print(current);
+			}						
+		}
 	}
 	
 	//Bkc such that...node is in SkC, node is INFL(b)
