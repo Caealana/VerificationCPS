@@ -207,15 +207,19 @@ public class collectDep { //collect dependencies
 					}
 					//S0C
 					//intersection def(current) and R0C(after) not empty, then add current to S0C
+					//not just direct edges...and node that is linked and comes after?
 					if(kPlus1 == false){
 						Set<String> S0CTest = new HashSet<String>(current.getDef());//def(current)
+						System.out.println("current node's def");
+						System.out.println(S0CTest);
 						S0CTest.retainAll(R0C.get(after));
+						System.out.println("R0C after");
+						System.out.println(R0C.get(after));
 						//System.out.print("S0C Test");
 						//System.out.println(S0CTest);
 						if(S0CTest.isEmpty() == false){
+							//not just comparing
 							S0C.add(current);
-							//System.out.println("Current Node ");
-							//System.out.print(current);
 						}
 					}
 					else{

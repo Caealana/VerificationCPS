@@ -162,7 +162,7 @@ public class TipTest {
 		Set<Integer> slice = new HashSet<Integer>();
 		boolean[] visited = new boolean[1000];
 		Set<String> criterionVars = new HashSet<String>();
-		criterionVars.add("sum");
+		criterionVars.add("product");
 		collectDep test = new collectDep(cfg, depList, slice,
 				visited, n11, criterionVars, nodeCount);
 		test.buildDep();
