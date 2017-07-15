@@ -239,6 +239,7 @@ public class collectDep { //collect dependencies
 				
 				if(kPlus1 == false){
 					Set<String> S0CTest = new HashSet<String>(current.getDef());//def(current)
+					
 					/*System.out.println("current node's def");
 					System.out.println(S0CTest);
 					System.out.println("R0C after");
