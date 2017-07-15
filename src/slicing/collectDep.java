@@ -84,14 +84,15 @@ public class collectDep { //collect dependencies
 	}
 	
 	//
-	public void buildR0CS0C(Node endN, HashMap<Node, List<Node>> edges, Set<String> vars, boolean kPlus1){
+	public void buildR0C(Node endN, HashMap<Node, List<Node>> edges, Set<String> vars, boolean kPlus1){
 		//if slicing criterion is null, just throw an error
 		
 		Stack<Node> dfs = new Stack(); //for dfs
-		boolean[] visited = new boolean[nodeCount]; //visited for each node
+		ArrayList<Node> visited = new ArrayList<Node>();
 		//System.out.println(edges.keySet());
 		//System.out.println(visited.length);
 		//initial visited set to false for all nodes
+		System.out.println("End node in dfs: " + endN);
 		dfs.push(endN);
 		
 		Node after = null;
@@ -99,16 +100,19 @@ public class collectDep { //collect dependencies
 		boolean start = false;
 		//System.out.println(queue.size());
 		while(dfs.empty() == false) {
+			System.out.println("In R0C Loop: " + R0C);
 			//after building up q, we update dep list
 			current = dfs.pop();
+			System.out.println("Current Node in R0C dfs: " + current);
 			//not sure if my image of the graph is right...
 			//System.out.println("current");
 			//System.out.println(current);
 			
 			//dfs push new nodes onto stack
-			if(visited[current.getIndex()] == false){
-				visited[current.getIndex()] = true;
+			if(visited.contains(current) == false){
+				visited.add(current);
 				List<Node> currentEdges = edges.get(current);
+
 				//System.out.println("current edges");
 				//System.out.println(currentEdges);
 				if(currentEdges != null){
@@ -126,13 +130,7 @@ public class collectDep { //collect dependencies
 					
 					//do we add slicing criterion ending node to S0C?
 					//my initial answer is yes
-					if(kPlus1 == false){
-						S0C.add(current);
-					}
-					else{
-						System.out.println("adding criterion node to sk1c");
-						Sk1C.add(current);
-					}
+					
 					//R0C case 1
 					if(vars.isEmpty() == false){
 						if(kPlus1 == false){ //checks if we are adding to Rk1C based on branch nodes
@@ -214,55 +212,83 @@ public class collectDep { //collect dependencies
 		}
 		Rk1C.putAll(R0C); // R k+1 C contains everything in S0C and R0C
 		//Sk1C.addAll(S0C);
+		System.out.println("R0C: " + R0C);
 	}
 	
-	public void buildS0C(){
+	public void buildS0C(Node start, Node endN, HashMap<Node, List<Node>> edges, boolean kPlus1){
 		//S0C
 		//intersection def(current) and R0C(after) not empty, then add current to S0C
 		//not just direct edges...and node that is linked and comes after?
-		if(kPlus1 == false){
-			Set<String> S0CTest = new HashSet<String>(current.getDef());//def(current)
-			/*System.out.println("current node's def");
-			System.out.println(S0CTest);
-			System.out.println("R0C after");
-			System.out.println(R0C.get(after));*/
-			//do we do dfs starting from current node - to get all successors?
-			Stack<Node> S0CDfs = new Stack<Node>();
-			ArrayList<Node> visitedS0C = new ArrayList<Node>();
-			visitedS0C.add(current);
-			//push all the edges of current node to dfs
-			List<Node> edgesS0C = edges.get(current);
-			S0CDfs.addAll(edgesS0C);
-			Node successor; //node j (i->j)
-			while(S0CDfs.isEmpty() == false){
-				successor = S0CDfs.pop();
-				System.out.println("Successor Node: " + successor);
-				System.out.println("R0C: " + R0C);
-				//R0C is not built yet at this point
-				Set<String> R0CSuccessor = R0C.get(successor);
-				System.out.println("R0CSuccessor: " + R0CSuccessor);
-				System.out.println("S0CTest: " + S0CTest);
-				(R0CSuccessor).retainAll(S0CTest);
-				if(R0CSuccessor.isEmpty() == false){
-					//not just comparing
+		//go forward through graph instead of backward
+		//if we find the criterion Node, stop moving forward
+		Stack<Node> dfs = new Stack<Node>();
+		dfs.push(start);
+		ArrayList<Node> visited = new ArrayList<Node>();
+		Node current; //current node we are on in dfs
+			while(dfs.isEmpty() == false){
+				current = dfs.pop();
+				if(visited.contains(current) == false){
+					visited.add(current);
+				/*if(kPlus1 == false){
 					S0C.add(current);
 				}
-				//push edges to dfs
-				List<Node> successorEdges = edges.get(successor);
-				S0CDfs.addAll(successorEdges);
+				else{
+					System.out.println("adding criterion node to sk1c");
+					Sk1C.add(current);
+				}*/
 				
+				if(kPlus1 == false){
+					Set<String> S0CTest = new HashSet<String>(current.getDef());//def(current)
+					/*System.out.println("current node's def");
+					System.out.println(S0CTest);
+					System.out.println("R0C after");
+					System.out.println(R0C.get(after));*/
+					//do we do dfs starting from current node - to get all successors?
+					Stack<Node> S0CDfs = new Stack<Node>();
+					ArrayList<Node> visitedS0C = new ArrayList<Node>();
+					visitedS0C.add(current);
+					//push all the edges of current node to dfs
+					List<Node> edgesS0C = edges.get(current);
+					S0CDfs.addAll(edgesS0C);
+					Node successor; //node j (i->j)
+					while(S0CDfs.isEmpty() == false){
+						successor = S0CDfs.pop();
+						if(visitedS0C.contains(successor) == false){
+							visitedS0C.add(successor);
+							System.out.println("Successor Node: " + successor);
+							System.out.println("R0C: " + R0C);
+							//R0C is not built yet at this point
+							Set<String> R0CSuccessor = R0C.get(successor);
+							System.out.println("R0CSuccessor: " + R0CSuccessor);
+							System.out.println("S0CTest: " + S0CTest);
+							
+							if(R0CSuccessor != null & S0CTest.isEmpty() == false){
+								(R0CSuccessor).retainAll(S0CTest);
+								if(R0CSuccessor.isEmpty() == false){
+									//not just comparing
+									S0C.add(current);
+								}
+							}
+							//push edges to dfs - as long as we are not pushing the edges of the end Node
+							if(successor != endN){
+								List<Node> successorEdges = edges.get(successor);
+								S0CDfs.addAll(successorEdges);
+							}
+						}
+					}
+				}
+					else{
+						/*Set<String> S0CTest = new HashSet<String>(current.getDef());//def(current)
+						S0CTest.retainAll(Rk1C.get(after));
+						System.out.print("S0C Test");
+						System.out.println(S0CTest);
+						if(S0CTest.isEmpty() == false){
+							Sk1C.add(current);
+							System.out.println("Current Node ");
+							System.out.print(current);
+						}*/						
+					}
 			}
-		}
-		else{
-			Set<String> S0CTest = new HashSet<String>(current.getDef());//def(current)
-			S0CTest.retainAll(Rk1C.get(after));
-			System.out.print("S0C Test");
-			System.out.println(S0CTest);
-			if(S0CTest.isEmpty() == false){
-				Sk1C.add(current);
-				System.out.println("Current Node ");
-				System.out.print(current);
-			}						
 		}
 	}
 	
@@ -298,7 +324,8 @@ public class collectDep { //collect dependencies
 		for(int i = 0; i <BkCArr.length; i++){
 			Node current = (Node)BkCArr[i];
 			Set<String> currentDef = new HashSet<String>(current.getDef()); 
-			buildR0CS0C(current, edges, currentDef, true );
+			buildR0C(current, edges, currentDef, true );
+			//buildS0C(current, current, edges, false);
 		}
 
 		Sk1C.addAll(BkC); //Sk+1C contains everything in BkC
@@ -330,21 +357,31 @@ public class collectDep { //collect dependencies
 		}
 		
 		//dfs through statements
-		HashMap<Node, List<Node>> edges = revCFG.getEdges();
-		Iterator<Node> nodes = edges.keySet().iterator(); //nodes
+		HashMap<Node, List<Node>> revEdges = revCFG.getEdges();
+		HashMap<Node, List<Node>> edges = CFG.getEdges();
+		Iterator<Node> nodes = revCFG.getKeyIterator(); //nodes
+		Node end = null;
+		Node start = null;
 		Node current = null;
 		while(nodes.hasNext()){
 			current = nodes.next();
+			System.out.println("Current getType: " + current.getType());
 			if(current.getType() == "stop"){ //ending node...go backwards from here
-				break; //we found the node to start at
+				end = current;
+			}
+			else if(current.getType() == "start"){
+				start = current;
 			}
 		}
 		
 		//build R0C
-		if(current == null){
-			System.out.println("current node is null");
+		if(end == null){
+			System.out.println("end node is null");
 		}
-		buildR0CS0C(current, edges, criterionVars, false);
+		buildR0C(end, revEdges, criterionVars, false);
+		
+		//build S0C
+		buildS0C(start, end, edges, false);
 		
 		//build BkC
 		//System.out.println("revCFG get branchNodes");
