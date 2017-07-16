@@ -84,7 +84,7 @@ public class collectDep { //collect dependencies
 	}
 	
 	//
-	public void buildR0CS0C(Node endN, HashMap<Node, List<Node>> edges, Set<String> vars, boolean kPlus1){
+	public void buildR0C(Node endN, HashMap<Node, List<Node>> edges, Set<String> vars, boolean kPlus1){
 		//if slicing criterion is null, just throw an error
 		
 		Stack<Node> dfs = new Stack(); //for dfs
@@ -220,7 +220,9 @@ public class collectDep { //collect dependencies
 						visitedS0C.add(current);
 						//push all the edges of current node to dfs
 						List<Node> edgesS0C = edges.get(current);
-						S0CDfs.addAll(edgesS0C);
+						if(edgesS0C != null){
+							S0CDfs.addAll(edgesS0C);
+						}
 						Node successor; //node j (i->j)
 						while(S0CDfs.isEmpty() == false){
 							successor = S0CDfs.pop();
@@ -230,15 +232,17 @@ public class collectDep { //collect dependencies
 							Set<String> R0CSuccessor = R0C.get(successor);
 							System.out.println("R0CSuccessor: " + R0CSuccessor);
 							System.out.println("S0CTest: " + S0CTest);
-							(R0CSuccessor).retainAll(S0CTest);
-							if(R0CSuccessor.isEmpty() == false){
-								//not just comparing
+							if(R0CSuccessor != null){
+								(R0CSuccessor).retainAll(S0CTest);
 								S0C.add(current);
 							}
 							//push edges to dfs
 							List<Node> successorEdges = edges.get(successor);
-							S0CDfs.addAll(successorEdges);
-							
+							System.out.println("S0CDfs: " + S0CDfs);
+							System.out.println("successor Edges" + successorEdges);
+							if(successorEdges != null){
+								S0CDfs.addAll(successorEdges);
+							}
 						}
 					}
 					else{
@@ -293,7 +297,7 @@ public class collectDep { //collect dependencies
 		for(int i = 0; i <BkCArr.length; i++){
 			Node current = (Node)BkCArr[i];
 			Set<String> currentDef = new HashSet<String>(current.getDef()); 
-			buildR0CS0C(current, edges, currentDef, true );
+			buildR0C(current, edges, currentDef, true );
 		}
 
 		Sk1C.addAll(BkC); //Sk+1C contains everything in BkC
