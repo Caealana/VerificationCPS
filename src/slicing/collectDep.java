@@ -368,6 +368,7 @@ public class collectDep { //collect dependencies
 			System.out.println("end node is null");
 		}
 		buildR0C(end, revEdges, criterionVars, false);
+		System.out.println("R0C after build R0C: " + R0C);
 		
 		//build S0C
 		buildS0C(start, end, edges, false);

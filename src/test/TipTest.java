@@ -182,8 +182,7 @@ public class TipTest {
 		test.buildDep();
 		
 		//print out the dep lists
-		System.out.println("R0C");
-		System.out.println(test.getR0C());
+		System.out.println("R0C: " + test.getR0C());
 		System.out.println("Rk1C");
 		System.out.println(test.getRk1C());
 		System.out.println("S0C");
