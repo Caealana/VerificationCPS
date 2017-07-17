@@ -343,7 +343,7 @@ public class collectDep { //collect dependencies
 		if(current == null){
 			System.out.println("current node is null");
 		}
-		buildR0CS0C(current, edges, criterionVars, false);
+		buildR0C(current, edges, criterionVars, false);
 		
 		//build BkC
 		//System.out.println("revCFG get branchNodes");
