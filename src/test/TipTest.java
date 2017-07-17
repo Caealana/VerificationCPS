@@ -31,33 +31,39 @@ public class TipTest {
 
 	public static void main(String[] args) throws Exception {
 		int nodeCount = 0;
+		ArrayList<Node> nodes = new ArrayList<Node>();
 		HashMap<Node, List<Node>> edges = new HashMap<Node, List<Node>>();
 		Node start = new Node(true); //node 0
 		nodeCount++;
+		nodes.add(start);
 		
 		ArrayList<String> ref = new ArrayList<String>();
 		ArrayList<String> def = new ArrayList<String>();
 		def.add("n");
 		Node n1 = new Node("assign", ref, def, 1); //assign as node type?
 		nodeCount++;
+		nodes.add(n1);
 		
 		ref = new ArrayList<String>();
 		def = new ArrayList<String>();
 		def.add("i");
 		Node n2 = new Node("assign", ref, def, 2);
 		nodeCount++;
+		nodes.add(n2);
 
 		ref = new ArrayList<String>();
 		def = new ArrayList<String>();
 		def.add("sum");
 		Node n3 = new Node("assign", ref, def, 3);
 		nodeCount++;
+		nodes.add(n3);
 		
 		ref = new ArrayList<String>();
 		def = new ArrayList<String>();
 		def.add("product");
 		Node n4 = new Node("assign", ref, def, 4);
 		nodeCount++;
+		nodes.add(n4);
 		
 		ref = new ArrayList<String>();
 		def = new ArrayList<String>();
@@ -66,6 +72,7 @@ public class TipTest {
 		Set<Node> INFL = new HashSet<Node>();
 		BranchNode n5 = new BranchNode("assign", ref, def, 5, INFL);
 		nodeCount++;
+		nodes.add(n5);
 		
 		ref = new ArrayList<String>();
 		def = new ArrayList<String>();
@@ -74,6 +81,7 @@ public class TipTest {
 		Node n6 = new Node("assign", ref, def, 6);
 		n5.addINFL(n6); //n6 part of loop add it
 		nodeCount++;
+		nodes.add(n6);
 		
 		ref = new ArrayList<String>();
 		def = new ArrayList<String>();
@@ -82,6 +90,7 @@ public class TipTest {
 		Node n7 = new Node("assign", ref, def, 7);
 		n5.addINFL(n7);
 		nodeCount++;
+		nodes.add(n7);
 		
 		ref = new ArrayList<String>();
 		def = new ArrayList<String>();
@@ -90,6 +99,7 @@ public class TipTest {
 		Node n8 = new Node("assign", ref, def, 8);
 		n5.addINFL(n8);
 		nodeCount++;
+		nodes.add(n8);
 		
 		ref = new ArrayList<String>();
 		def = new ArrayList<String>();
@@ -97,6 +107,7 @@ public class TipTest {
 		def.add("sum");
 		Node n9 = new Node("assign", ref, def, 9);
 		nodeCount++;
+		nodes.add(n9);
 		
 		ref = new ArrayList<String>();
 		def = new ArrayList<String>();
@@ -104,11 +115,13 @@ public class TipTest {
 		def.add("product");
 		Node n10 = new Node("assign", ref, def, 10);
 		nodeCount++;
+		nodes.add(n10);
 		
 		ref = new ArrayList<String>();
 		def = new ArrayList<String>();
 		Node n11 = new Node("stop", ref, def, 11);
 		nodeCount++;
+		nodes.add(n11);
 		
 		List<Node> children = new ArrayList<Node>();
 		children.add(n1);
@@ -157,6 +170,7 @@ public class TipTest {
 		
 		//get dep lists
 		ControlFlowGraph cfg = new ControlFlowGraph(edges);
+		cfg.addNodeList(nodes);
 		cfg.addBranchNode(n5);
 		HashMap<String, Set<Object>> depList = new HashMap<String, Set<Object>>();
 		Set<Integer> slice = new HashSet<Integer>();

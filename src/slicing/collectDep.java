@@ -113,8 +113,6 @@ public class collectDep { //collect dependencies
 				visited.add(current);
 				List<Node> currentEdges = edges.get(current);
 
-				//System.out.println("current edges");
-				//System.out.println(currentEdges);
 				if(currentEdges != null){
 					//push edges to stack
 					Iterator<Node> edgeIt = currentEdges.iterator();
@@ -127,9 +125,6 @@ public class collectDep { //collect dependencies
 					//the criterion node is the ENDING node
 					//we want to start saving dependences from this point on
 					System.out.println("found criterion node");
-					
-					//do we add slicing criterion ending node to S0C?
-					//my initial answer is yes
 					
 					//R0C case 1
 					if(vars.isEmpty() == false){
@@ -155,8 +150,6 @@ public class collectDep { //collect dependencies
 				}
 				
 				else if (start == true){
-					//System.out.println(current);
-					//System.out.println(after);
 					//current node R0c based on R0c of node after it
 					//case 2a
 					//n comes before m
@@ -170,11 +163,13 @@ public class collectDep { //collect dependencies
 						String varW= defn.get(i);
 						Set<String> R0Cm = R0C.get(after);
 						//see if the var you found is contained withinR0C(m)
-						if(R0Cm.contains(varW)){
-							//if it is...add all refn to v
+						if(R0Cm.contains(varW)){ //w in R0C and def
+							//if it is...add all ref od n to v
 							Set<String> refn = new HashSet<String>(current.getRef());
+							System.out.println("refn adding to R0C: " + refn);
 							if(kPlus1 == false){
 								R0C.put(current, refn);
+								System.out.println("R0C currently in loop: " + R0C);
 							}
 							else{
 								Rk1C.put(current, refn);
@@ -182,6 +177,7 @@ public class collectDep { //collect dependencies
 						}
 					}
 					
+					/*
 					//case 2b
 					//n before m
 					//v NOT IN Def(n), v is in R0C(m)
@@ -204,7 +200,7 @@ public class collectDep { //collect dependencies
 						Rk1C.put(current, v);
 					}
 
-					
+					*/
 					
 					after = current;
 				}
@@ -229,66 +225,60 @@ public class collectDep { //collect dependencies
 				current = dfs.pop();
 				if(visited.contains(current) == false){
 					visited.add(current);
-				/*if(kPlus1 == false){
-					S0C.add(current);
-				}
-				else{
-					System.out.println("adding criterion node to sk1c");
-					Sk1C.add(current);
-				}*/
-				
-				if(kPlus1 == false){
-					Set<String> S0CTest = new HashSet<String>(current.getDef());//def(current)
-					
-					/*System.out.println("current node's def");
-					System.out.println(S0CTest);
-					System.out.println("R0C after");
-					System.out.println(R0C.get(after));*/
-					//do we do dfs starting from current node - to get all successors?
-					Stack<Node> S0CDfs = new Stack<Node>();
-					ArrayList<Node> visitedS0C = new ArrayList<Node>();
-					visitedS0C.add(current);
-					//push all the edges of current node to dfs
-					List<Node> edgesS0C = edges.get(current);
-					S0CDfs.addAll(edgesS0C);
-					Node successor; //node j (i->j)
-					while(S0CDfs.isEmpty() == false){
-						successor = S0CDfs.pop();
-						if(visitedS0C.contains(successor) == false){
-							visitedS0C.add(successor);
-							System.out.println("Successor Node: " + successor);
-							System.out.println("R0C: " + R0C);
-							//R0C is not built yet at this point
-							Set<String> R0CSuccessor = R0C.get(successor);
-							System.out.println("R0CSuccessor: " + R0CSuccessor);
-							System.out.println("S0CTest: " + S0CTest);
-							
-							if(R0CSuccessor != null & S0CTest.isEmpty() == false){
-								(R0CSuccessor).retainAll(S0CTest);
-								if(R0CSuccessor.isEmpty() == false){
-									//not just comparing
-									S0C.add(current);
+					//add edges of current to dfs, as long as they exist
+					if(edges.get(current) != null){
+						dfs.addAll(edges.get(current));
+					}
+					//kPlus1 decides whether we are building initial sets or k+1 sets
+					if(kPlus1 == false & current.getDef() != null){ //build S0C
+						System.out.println("currentDef" + current.getDef());
+						Set<String> S0CTest = new HashSet<String>(current.getDef());//def(current)	
+						Stack<Node> S0CDfs = new Stack<Node>(); //stack for dfs comparing def current to all successor nodes
+						ArrayList<Node> visitedS0C = new ArrayList<Node>();
+						visitedS0C.add(current);
+						//push all the edges of current node to dfs, if they exist
+						List<Node> edgesS0C = edges.get(current);
+						if(edgesS0C != null){
+							S0CDfs.addAll(edgesS0C);
+						}
+						Node successor; //node j (i->j)
+						while(S0CDfs.isEmpty() == false){
+							successor = S0CDfs.pop();
+							if(visitedS0C.contains(successor) == false){ //not visited
+								visitedS0C.add(successor);
+								//System.out.println("Successor Node: " + successor);
+								Set<String> R0CSuccessor = R0C.get(successor);
+								System.out.println("R0CSuccessor: " + R0CSuccessor);
+								System.out.println("S0CTest: " + S0CTest);
+								
+								if(R0CSuccessor != null & S0CTest.isEmpty() == false){
+									(R0CSuccessor).retainAll(S0CTest);
+									System.out.println("R0CSuccessor after intersection: " + R0CSuccessor);
+									if(R0CSuccessor.isEmpty() == false){
+										//not just comparing
+										System.out.println("adding to S0C");
+										S0C.add(current);
+									}
 								}
-							}
-							//push edges to dfs - as long as we are not pushing the edges of the end Node
-							if(successor != endN){
-								List<Node> successorEdges = edges.get(successor);
-								S0CDfs.addAll(successorEdges);
+								//push edges to dfs - as long as we are not pushing the edges of the end Node
+								if(successor != endN){
+									List<Node> successorEdges = edges.get(successor);
+									S0CDfs.addAll(successorEdges);
+								}
 							}
 						}
 					}
-				}
-					else{
-						/*Set<String> S0CTest = new HashSet<String>(current.getDef());//def(current)
-						S0CTest.retainAll(Rk1C.get(after));
-						System.out.print("S0C Test");
-						System.out.println(S0CTest);
-						if(S0CTest.isEmpty() == false){
-							Sk1C.add(current);
-							System.out.println("Current Node ");
-							System.out.print(current);
-						}*/						
-					}
+						else{
+							/*Set<String> S0CTest = new HashSet<String>(current.getDef());//def(current)
+							S0CTest.retainAll(Rk1C.get(after));
+							System.out.print("S0C Test");
+							System.out.println(S0CTest);
+							if(S0CTest.isEmpty() == false){
+								Sk1C.add(current);
+								System.out.println("Current Node ");
+								System.out.print(current);
+							}*/						
+						}
 			}
 		}
 	}
@@ -360,12 +350,13 @@ public class collectDep { //collect dependencies
 		//dfs through statements
 		HashMap<Node, List<Node>> revEdges = revCFG.getEdges();
 		HashMap<Node, List<Node>> edges = CFG.getEdges();
-		Iterator<Node> nodes = revCFG.getKeyIterator(); //nodes
+		ArrayList<Node> nodes = CFG.getNodeList();
+		Iterator<Node> nodeIt = nodes.iterator();
 		Node end = null;
 		Node start = null;
 		Node current = null;
-		while(nodes.hasNext()){
-			current = nodes.next();
+		while(nodeIt.hasNext()){
+			current = nodeIt.next();
 			System.out.println("Current getType: " + current.getType());
 			if(current.getType() == "stop"){ //ending node...go backwards from here
 				end = current;

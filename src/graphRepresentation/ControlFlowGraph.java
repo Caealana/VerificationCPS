@@ -7,11 +7,13 @@ public class ControlFlowGraph {
 	private int nodeCount;
 	private Set<BranchNode> branchNodes;
 	private Node start;
+	private ArrayList<Node> nodes;
 	
 	public ControlFlowGraph() {
 		edges = new HashMap<Node, List<Node>>();
 		nodeCount = 0;
 		branchNodes = new HashSet<BranchNode>();
+		nodes = new ArrayList<Node>();
 
 	}
 	
@@ -30,6 +32,14 @@ public class ControlFlowGraph {
 	
 	public HashMap<Node, List<Node>> getEdges() {
 		return edges;
+	}
+	
+	public void addNodeList(ArrayList<Node> nodes){
+		this.nodes = nodes;
+	}
+	
+	public ArrayList<Node> getNodeList(){
+		return nodes;
 	}
 	
 	public Set<Node> getKeys() {
