@@ -100,13 +100,8 @@ public class collectDep { //collect dependencies
 		boolean start = false;
 		//System.out.println(queue.size());
 		while(dfs.empty() == false) {
-			System.out.println("In R0C Loop: " + R0C);
 			//after building up q, we update dep list
 			current = dfs.pop();
-			System.out.println("Current Node in R0C dfs: " + current);
-			//not sure if my image of the graph is right...
-			//System.out.println("current");
-			//System.out.println(current);
 			
 			//dfs push new nodes onto stack
 			if(visited.contains(current) == false){
@@ -150,6 +145,7 @@ public class collectDep { //collect dependencies
 				}
 				
 				else if (start == true){
+					
 					//current node R0c based on R0c of node after it
 					//case 2a
 					//n comes before m
@@ -163,51 +159,52 @@ public class collectDep { //collect dependencies
 						String varW= defn.get(i);
 						Set<String> R0Cm = R0C.get(after);
 						//see if the var you found is contained withinR0C(m)
-						if(R0Cm.contains(varW)){ //w in R0C and def
-							//if it is...add all ref od n to v
-							Set<String> refn = new HashSet<String>(current.getRef());
-							System.out.println("refn adding to R0C: " + refn);
-							if(kPlus1 == false){
-								R0C.put(current, refn);
-								System.out.println("R0C currently in loop: " + R0C);
-							}
-							else{
-								Rk1C.put(current, refn);
+						if(R0Cm != null){
+							if(R0Cm.contains(varW)){ //w in R0C and def
+								//if it is...add all ref od n to v
+								Set<String> refn = new HashSet<String>(current.getRef());
+								System.out.println("refn adding to R0C: " + refn);
+								if(kPlus1 == false){
+									R0C.put(current, refn);
+									System.out.println("R0C currently in loop: " + R0C);
+								}
+								else{
+									Rk1C.put(current, refn);
+								}
 							}
 						}
 					}
 					
-					/*
+					
 					//case 2b
 					//n before m
 					//v NOT IN Def(n), v is in R0C(m)
 					ArrayList<String> DEFn = current.getDef(); //DEF(n)
 					Set<String> R0Cm = R0C.get(after); //R0C(m)
-					Object[] R0CmArr = R0Cm.toArray();
-					Set<String> v = new HashSet<String>(); //vars to add to dep list
-					//go through vars in R0C(m)
-					for(int k = 0; k < R0CmArr.length; k++){
-						String var = (String) R0CmArr[k]; //v is in R0C(m)
-						if(DEFn.contains(var) == false){
-							//v is not in DEF(n)
-							v.add(var);
+					if(R0Cm != null){
+						Object[] R0CmArr = R0Cm.toArray();
+						Set<String> v = new HashSet<String>(); //vars to add to dep list
+						//go through vars in R0C(m)
+						for(int k = 0; k < R0CmArr.length; k++){
+							String var = (String) R0CmArr[k]; //v is in R0C(m)
+							if(DEFn.contains(var) == false){
+								//v is not in DEF(n)
+								v.add(var);
+							}
+						}
+						if(kPlus1 == false & v.isEmpty() == false){
+							R0C.put(current, v);
+							System.out.println("Put v: " + v + " in current: " + current);
+						}
+						else{
+							Rk1C.put(current, v);
 						}
 					}
-					if(kPlus1 == false){
-						R0C.put(current, v);
-					}
-					else{
-						Rk1C.put(current, v);
-					}
-
-					*/
-					
 					after = current;
 				}
 			}
 		}
 		Rk1C.putAll(R0C); // R k+1 C contains everything in S0C and R0C
-		//Sk1C.addAll(S0C);
 		System.out.println("R0C: " + R0C);
 	}
 	
