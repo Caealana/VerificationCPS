@@ -88,10 +88,6 @@ public class collectDep { //collect dependencies
 		//if slicing criterion is null, just throw an error
 		
 		Stack<Node> dfs = new Stack(); //for dfs
-		boolean[] visited = new boolean[nodeCount]; //visited for each node
-		//System.out.println(edges.keySet());
-		//System.out.println(visited.length);
-		//initial visited set to false for all nodes
 		dfs.push(endN);
 		
 		Node after = null;
