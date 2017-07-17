@@ -228,8 +228,8 @@ public class collectDep { //collect dependencies
 					}
 					//kPlus1 decides whether we are building initial sets or k+1 sets
 					if(kPlus1 == false & current.getDef() != null){ //build S0C
-						System.out.println("currentDef" + current.getDef());
-						Set<String> S0CTest = new HashSet<String>(current.getDef());//def(current)	
+						System.out.println("current" + current);
+						Set<String> currentDef = new HashSet<String>(current.getDef());//def(current)	
 						Stack<Node> S0CDfs = new Stack<Node>(); //stack for dfs comparing def current to all successor nodes
 						ArrayList<Node> visitedS0C = new ArrayList<Node>();
 						visitedS0C.add(current);
@@ -239,17 +239,18 @@ public class collectDep { //collect dependencies
 							S0CDfs.addAll(edgesS0C);
 						}
 						Node successor; //node j (i->j)
-						while(S0CDfs.isEmpty() == false){
+						while(S0CDfs.isEmpty() == false){//dfs within dfs
 							successor = S0CDfs.pop();
 							if(visitedS0C.contains(successor) == false){ //not visited
 								visitedS0C.add(successor);
-								//System.out.println("Successor Node: " + successor);
+								System.out.println("Successor Node: " + successor);
 								Set<String> R0CSuccessor = R0C.get(successor);
 								System.out.println("R0CSuccessor: " + R0CSuccessor);
-								System.out.println("S0CTest: " + S0CTest);
+								System.out.println("currentDef: " + currentDef);
+								System.out.println("R0C in inner dfs: " + R0C);
 								
-								if(R0CSuccessor != null & S0CTest.isEmpty() == false){
-									(R0CSuccessor).retainAll(S0CTest);
+								if(R0CSuccessor != null & currentDef.isEmpty() == false){
+									(R0CSuccessor).retainAll(currentDef);
 									System.out.println("R0CSuccessor after intersection: " + R0CSuccessor);
 									if(R0CSuccessor.isEmpty() == false){
 										//not just comparing
