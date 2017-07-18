@@ -4,6 +4,7 @@ package slicing;
 import graphRepresentation.ControlFlowGraph;
 import graphRepresentation.Node;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -12,19 +13,25 @@ import java.util.Stack;
 
 public class S0C {
 	R0C R0C;
-	Set<Node> S0C;
+	Set<Node> S0CSet;
 	ControlFlowGraph cfg;
 	HashMap<Node, List<Node>> revEdges;
 	HashMap<Node, List<Node>> edges;
 	Node criterionNode;
+	Node start;
 	
-	public S0C(R0C R0C, ControlFlowGraph cfg, Node criterionNode){
+	public S0C(R0C R0C, ControlFlowGraph cfg, Node criterionNode, Node start){
 		this.R0C = R0C;
-		this.S0C = new HashSet<Node>();
+		this.S0CSet = new HashSet<Node>();
 		this.cfg = cfg;
 		this.revEdges = cfg.getReversedEdges();
 		this.edges = cfg.getEdges();
 		this.criterionNode = criterionNode;
+		this.start = start;
+	}
+	
+	public Set<Node> getS0CSet(){
+		return this.S0CSet;
 	}
 	
 	public void buildS0C(){
@@ -32,9 +39,44 @@ public class S0C {
 		//j is every successor node to i
 		//dfs to go through every node
 		Stack<Node> stack = new Stack<Node>();
-		stack.push(criterionNode);
+		stack.push(start);
+		ArrayList<Node> visited = new ArrayList<Node>();
 		while(stack.isEmpty() == false){
 			Node i = stack.pop();
+			if(visited.contains(i) == false){ //Only check new nodes
+				//set this node as visited
+				visited.add(i);
+				//DEF of i
+				ArrayList<String> iDEF = i.getDef();
+				HashSet<String> iDEFSet = new HashSet<String>(iDEF);
+				//System.out.println("i node we are checking: " + i);
+				//System.out.println("DEF(i) in buildS0C: " + iDEFSet);
+				List<Node> iEdges = edges.get(i);
+				//another dfs - to go through the successor nodes
+				Stack<Node> successors = new Stack<Node>();
+				if(iEdges != null & i != criterionNode){ //edges not null, don't go past criterion
+					successors.addAll(iEdges); //add the successors of i, also to stack
+					stack.addAll(iEdges);
+				}
+				while(successors.isEmpty() == false){ //while this current node still has successors to check
+					Node j = successors.pop();
+					HashMap<Node, Set<String>> R0CSet = R0C.getR0CSet();
+					Set<String> jR0C = R0CSet.get(j);
+					//System.out.println("R0C(j) in buildS0C: " + jR0C);
+					if(jR0C != null & iDEFSet != null){ //can't intersect null
+						jR0C.retainAll(iDEFSet); //INTERSECTIOn of Def(i) R0C(j)
+						//System.out.println("intersection of R0Cj and DEFi: " + jR0C);
+						if(jR0C.isEmpty() == false){ //intersection not empty
+							S0CSet.add(i); //add node i to set of S0C
+						}
+						//add forward edges of this successor for next generation successors
+						List<Node> jEdges = edges.get(j);
+						if(jEdges != null & j!= criterionNode){ //don't want to go past criterionNode?
+							successors.addAll(jEdges);
+						}
+					}
+				}
+			}
 		}
 	}
 }

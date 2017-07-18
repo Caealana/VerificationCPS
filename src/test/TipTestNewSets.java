@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 import slicing.R0C;
+import slicing.S0C;
 import slicing.collectDep;
 
 public class TipTestNewSets {
@@ -165,9 +166,15 @@ public class TipTestNewSets {
 		ArrayList<String> criterionVars = new ArrayList<String>();
 		criterionVars.add("product");
 		
+		//BUILD R0C
 		R0C R0C = new R0C(n11, criterionVars, cfg);
 		R0C.buildR0C();
 		System.out.println("built R0C: " + R0C.getR0CSet());
+		
+		//BUILD S0C
+		S0C S0C = new S0C(R0C, cfg, n11, start);
+		S0C.buildS0C();
+		System.out.println("built S0C: " + S0C.getS0CSet());
 	}
 
 }
