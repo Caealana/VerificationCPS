@@ -49,8 +49,8 @@ public class S0C {
 				//DEF of i
 				ArrayList<String> iDEF = i.getDef();
 				HashSet<String> iDEFSet = new HashSet<String>(iDEF);
-				//System.out.println("i node we are checking: " + i);
-				//System.out.println("DEF(i) in buildS0C: " + iDEFSet);
+				System.out.println("i node we are checking: " + i);
+				System.out.println("DEF(i) in buildS0C: " + iDEFSet);
 				List<Node> iEdges = edges.get(i);
 				//another dfs - to go through the successor nodes
 				Stack<Node> successors = new Stack<Node>();
@@ -61,11 +61,12 @@ public class S0C {
 				while(successors.isEmpty() == false){ //while this current node still has successors to check
 					Node j = successors.pop();
 					HashMap<Node, Set<String>> R0CSet = R0C.getR0CSet();
+					System.out.println("R0C in innerloop b4 get j: " + R0C.getR0CSet());
 					Set<String> jR0C = R0CSet.get(j);
-					//System.out.println("R0C(j) in buildS0C: " + jR0C);
 					if(jR0C != null & iDEFSet != null){ //can't intersect null
-						jR0C.retainAll(iDEFSet); //INTERSECTIOn of Def(i) R0C(j)
-						//System.out.println("intersection of R0Cj and DEFi: " + jR0C);
+						iDEFSet.retainAll(jR0C); //INTERSECTIOn of Def(i) R0C(j)
+						System.out.println("R0CSet: " + R0CSet);
+						/*System.out.println("intersection of R0Cj and DEFi: " + jR0C);
 						if(jR0C.isEmpty() == false){ //intersection not empty
 							S0CSet.add(i); //add node i to set of S0C
 						}
@@ -73,7 +74,7 @@ public class S0C {
 						List<Node> jEdges = edges.get(j);
 						if(jEdges != null & j!= criterionNode){ //don't want to go past criterionNode?
 							successors.addAll(jEdges);
-						}
+						}*/
 					}
 				}
 			}
