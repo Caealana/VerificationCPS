@@ -27,6 +27,7 @@ import java.util.Set;
 
 import slicing.BkC;
 import slicing.R0C;
+import slicing.Rk1C;
 import slicing.S0C;
 import slicing.collectDep;
 
@@ -181,6 +182,12 @@ public class TipTestNewSets {
 		BkC BkC = new BkC(S0C, cfg);
 		BkC.buildBkCSet();
 		System.out.println("build BkC: " + BkC.getBkCSet());
+		
+		//BUILD Rk+1C
+		Rk1C Rk1C = new Rk1C(cfg, BkC, R0C);
+		Rk1C.buildRk1C();
+		System.out.println("build Rk1C: " + Rk1C.getRk1CSet());
+		
 	}
 
 }
