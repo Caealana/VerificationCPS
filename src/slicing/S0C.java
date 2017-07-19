@@ -66,15 +66,16 @@ public class S0C {
 					if(jR0C != null & iDEFSet != null){ //can't intersect null
 						iDEFSet.retainAll(jR0C); //INTERSECTIOn of Def(i) R0C(j)
 						System.out.println("R0CSet: " + R0CSet);
-						/*System.out.println("intersection of R0Cj and DEFi: " + jR0C);
-						if(jR0C.isEmpty() == false){ //intersection not empty
+						System.out.println("intersection of R0Cj and DEFi: " + jR0C);
+						if(iDEFSet.isEmpty() == false){ //intersection not empty
 							S0CSet.add(i); //add node i to set of S0C
+							break; //don't need to check other successors
 						}
 						//add forward edges of this successor for next generation successors
 						List<Node> jEdges = edges.get(j);
 						if(jEdges != null & j!= criterionNode){ //don't want to go past criterionNode?
 							successors.addAll(jEdges);
-						}*/
+						}
 					}
 				}
 			}
