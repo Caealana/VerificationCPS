@@ -190,9 +190,7 @@ public class TipTestNewSets {
 		System.out.println("build Rk1C: " + Rk1C.getRk1CSet());
 		
 		System.out.println("R0C after bulding Rk1C: " + Rk1C.getRk1CSet());
-		//R0C after bulding Rk1C: {6 assign REF [sum] DEF [sum]=[product], 10 assign REF [product] DEF [product]=[product], 9 assign REF [sum] DEF [sum]=[product], 8 assign REF [i] DEF [i]=[product], 11 stop REF [] DEF []=[product], 4 assign REF [] DEF [product]=[i, n], 3 assign REF [] DEF [sum]=[i, n], 5 assign REF [i, n] DEF []=[product, i, n], 7 assign REF [product] DEF [product]=[product], 2 assign REF [] DEF [i]=[n]}
-		//built R0C: {6 assign REF [sum] DEF [sum]=[product], 10 assign REF [product] DEF [product]=[product], 9 assign REF [sum] DEF [sum]=[product], 8 assign REF [i] DEF [i]=[product], 11 stop REF [] DEF []=[product], 5 assign REF [i, n] DEF []=[product], 7 assign REF [product] DEF [product]=[product]}
-
+		
 	}
 
 }
