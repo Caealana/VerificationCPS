@@ -7,8 +7,10 @@ import graphRepresentation.Node;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
@@ -24,6 +26,7 @@ public class Rk1C {
 	Node criterionNode;
 	ArrayList<String> criterionVars;
 	R0C R0C;
+	HashMap<Node, Set<String>> R0CSet;
 	
 	public Rk1C(ControlFlowGraph cfg, BkC BkC, R0C R0C){
 		this.BkC = BkC;
@@ -31,7 +34,20 @@ public class Rk1C {
 		this.edges = cfg.getEdges();
 		this.revEdges = cfg.getReversedEdges();
 		this.R0C = R0C;
-		this.Rk1CSet = R0C.getR0CSet();
+		this.R0CSet = R0C.getR0CSet();
+		this.Rk1CSet = new HashMap<Node, Set<String>>();
+		/*
+		//copy over all the values from R0CSet into Rk1CSet
+		//source for iterating through hashmap: https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
+		Iterator R0CIt = R0CSet.entrySet().iterator();
+		 while (R0CIt.hasNext()) {
+		        Map.Entry pair = (Map.Entry)R0CIt.next();
+		        System.out.println("pair value: " + pair.getValue());
+		        System.out.println("pair key: " + pair.getKey());
+		        Rk1CSet.put((Node) pair.getKey(), (Set<String>) pair.getValue());
+		        System.out.println(pair.getKey() + " = " + pair.getValue());
+		        R0CIt.remove(); // avoids a ConcurrentModificationException
+		    }*/
 	}
 	
 	public HashMap<Node, Set<String>> getRk1CSet(){
@@ -69,13 +85,14 @@ public class Rk1C {
 		}
 	}
 	
+	
 	public void case1a(){
 		//current node is criterion node. set criterion vars for its R0CSet
 		Set<String> criterionVarsSet = new HashSet<String>(criterionVars); //turn criterionvars to a set from arraylist
 		System.out.println("criterionNode: " + criterionNode);
 		System.out.println("criterionVarsSet: " + criterionVarsSet);
 		if(criterionVarsSet != null){
-			//Rk1CSet.get();
+			//insert new values into Rk1C
 			Rk1CSet.put(criterionNode, criterionVarsSet);
 			System.out.println("criterionVarsSet: " + criterionVarsSet);
 		}
