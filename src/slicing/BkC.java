@@ -27,7 +27,7 @@ public class BkC {
 		return this.BkCSet;
 	}
 	
-	public void buildBkCSet(){
+	public void buildBkC(){
 		Set<BranchNode> branches = cfg.getBranchNodes();
 		Object[] branchesArr = branches.toArray();
 		//go through branch statements, get INFL
