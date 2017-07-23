@@ -95,7 +95,7 @@ public class S0C {
 		}
 	}
 	
-	public void innerDFS(Stack<Node> successors, HashSet<String> iDEFSet){
+	/*public void innerDFS(Stack<Node> successors, HashSet<String> iDEFSet){
 		while(successors.isEmpty() == false){ //while this current node still has successors to check
 			Node j = successors.pop();
 			HashMap<Node, Set<String>> R0CSet = R0C.getR0CSet();
@@ -116,5 +116,5 @@ public class S0C {
 				}
 			}
 		}
-	}
+	}*/
 }
