@@ -16,12 +16,12 @@ public class VerticesOfSlice {
 	//returns a set of vertices
 	//G an SDG
 	//V, V', Answer: sets of vertices of G
+	//this version uses array list instead of set for easy removal
 	
 	SystemDependenceGraph G;
-	Set<Vertice> V;
-	Set<Vertice> VMark;
-	Set<Vertice> Answer;
-	
+	ArrayList<Vertice> V;
+	ArrayList<Vertice> VMark;
+	ArrayList<Vertice> Answer;
 	ArrayList<Vertice> marked;
 	public VerticesOfSlice(){
 		marked = new ArrayList<Vertice>();
@@ -41,16 +41,11 @@ public class VerticesOfSlice {
 		//V, WorkList, Answer, sets of vertices of G
 		//ExcludedEdgeKinds: a set of edge-kinds
 		//v, w: vertices of G
-		Set<Vertice> WorkList; //difficult to remove from set in java, start with arraylist
-		Set<Vertice> Answer;
-		Set<EdgeKind> ExcludedEdgesKinds;
+		ArrayList<Vertice> WorkList; //difficult to remove from set in java, start with arraylist
+		ArrayList<EdgeKind> ExcludedEdgesKinds;
 		Vertice v;
 		Vertice w;
-		
-		WorkList = V;
-		Answer = Collections.emptySet();
-		Object[] WorkListArr = WorkList.toArray();
-		ArrayList<Object> WorkListArrList = new ArrayList<Object>(Arrays.asList(WorkListArr));
+		WorkList = V; //initial WorkList is V
 		while(WorkList.isEmpty() == false){
 			//select and remove a vertex v from WorkList
 			
