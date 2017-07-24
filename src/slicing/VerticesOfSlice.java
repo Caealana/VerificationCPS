@@ -39,10 +39,6 @@ public class VerticesOfSlice {
 		
 		WorkList = V;
 		Answer = Collections.emptySet();
-		Stack<Vertice> WorkListStack = new Stack<Vertice>();
-		for(){
-			
-		}
 		while(WorkList.isEmpty() == false){
 			//select and remove a vertex v from WorkList
 			
