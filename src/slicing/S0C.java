@@ -83,7 +83,9 @@ public class S0C {
 	}
 	
 	//compare DEF(i) R0C(j)
-	public void outerLoop(Node i){
+	public void outerLoop(Node i, Stack<Node> successors){
+		ArrayList<String> iDEF = i.getDef();
+		HashSet<String> iDEFSet = new HashSet<String>(iDEF);
 		while(successors.isEmpty() == false){ //while this current node still has successors to check
 			Node j = successors.pop();
 			HashMap<Node, Set<String>> R0CSet = R0C.getR0CSet();
@@ -109,8 +111,8 @@ public class S0C {
 	public void innerLoop(Node i, Stack<Node> stack){
 
 		//DEF of i
-		ArrayList<String> iDEF = i.getDef();
-		HashSet<String> iDEFSet = new HashSet<String>(iDEF);
+		//ArrayList<String> iDEF = i.getDef();
+		//HashSet<String> iDEFSet = new HashSet<String>(iDEF);
 		//System.out.println("i node we are checking: " + i);
 		//System.out.println("DEF(i) in buildS0C: " + iDEFSet);
 		List<Node> iEdges = edges.get(i);
@@ -120,6 +122,6 @@ public class S0C {
 			successors.addAll(iEdges); //add the successors of i, also to stack
 			stack.addAll(iEdges);
 		}
-		outerLoop(i);
+		outerLoop(i, successors);
 	}
 }
