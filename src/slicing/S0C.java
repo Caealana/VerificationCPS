@@ -47,6 +47,11 @@ public class S0C {
 				//set this node as visited
 				visited.add(i);
 				innerLoop(i);
+				//add edges of i to stack
+				List<Node> iEdges = edges.get(i);
+				if(iEdges != null){
+					stack.addAll(iEdges);
+				}
 			}
 		}
 	}

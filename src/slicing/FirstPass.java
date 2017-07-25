@@ -27,6 +27,14 @@ public class FirstPass {
 		this.revEdges = this.cfg.getReversedEdges();
 	}
 	
+	public R0C getR0C(){
+		return this.R0C;
+	}
+	
+	public S0C getS0C(){
+		return this.S0C;
+	}
+	
 	public void dfsFirstPass(){
 		Stack<Node> stack = new Stack<Node>(); //dfs stack
 		HashMap<Node, List<Node>> revEdges = cfg.getReversedEdges();
@@ -45,7 +53,7 @@ public class FirstPass {
 				//while doing that, do S0C
 				S0C.innerLoop(i);
 				//add edges to stack
-				List<Node> iEdges = edges.get(i);
+				List<Node> iEdges = revEdges.get(i);
 				if(iEdges != null){ //edges not null, don't go past criterion
 					stack.addAll(iEdges); //add the successors of i, also to stack
 					//stack.addAll(iEdges);

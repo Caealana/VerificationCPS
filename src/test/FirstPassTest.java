@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import slicing.FirstPass;
+
 public class FirstPassTest {
 
 	public static void main(String[] args) {
@@ -147,6 +149,11 @@ public class FirstPassTest {
 		boolean[] visited = new boolean[1000];
 		ArrayList<String> criterionVars = new ArrayList<String>();
 		criterionVars.add("product");
+		
+		FirstPass fpTest = new FirstPass(n11, criterionVars, cfg);
+		fpTest.dfsFirstPass();
+		System.out.println("R0C Set in firstpasstest: " + fpTest.getR0C().getR0CSet());
+		System.out.println("S0C Set in firstpasstest: " + fpTest.getS0C().getS0CSet());
 
 	}
 
