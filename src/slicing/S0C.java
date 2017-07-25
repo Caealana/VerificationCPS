@@ -20,14 +20,14 @@ public class S0C {
 	Node criterionNode;
 	Node start;
 	
-	public S0C(R0C R0C, ControlFlowGraph cfg, Node criterionNode, Node start){
+	public S0C(R0C R0C, ControlFlowGraph cfg, Node criterionNode){
 		this.R0C = R0C;
 		this.S0CSet = new HashSet<Node>();
 		this.cfg = cfg;
 		this.revEdges = cfg.getReversedEdges();
 		this.edges = cfg.getEdges();
 		this.criterionNode = criterionNode;
-		this.start = start;
+		this.start = cfg.getStartNode();
 	}
 	
 	public Set<Node> getS0CSet(){

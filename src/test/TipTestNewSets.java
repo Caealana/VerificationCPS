@@ -162,6 +162,7 @@ public class TipTestNewSets {
 		
 		//get dep lists
 		ControlFlowGraph cfg = new ControlFlowGraph(edges);
+		cfg.setStartNode(start);
 		cfg.addBranchNode(n5);
 		HashMap<String, Set<Object>> depList = new HashMap<String, Set<Object>>();
 		Set<Integer> slice = new HashSet<Integer>();
@@ -175,7 +176,7 @@ public class TipTestNewSets {
 		System.out.println("built R0C: " + R0C.getR0CSet());
 		
 		//BUILD S0C
-		S0C S0C = new S0C(R0C, cfg, n11, start);
+		S0C S0C = new S0C(R0C, cfg, n11);
 		S0C.buildS0C();
 		System.out.println("built S0C: " + S0C.getS0CSet());
 		
