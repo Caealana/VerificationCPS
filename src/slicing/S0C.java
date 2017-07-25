@@ -46,7 +46,7 @@ public class S0C {
 			if(visited.contains(i) == false){ //Only check new nodes
 				//set this node as visited
 				visited.add(i);
-				innerLoop(i, stack);
+				innerLoop(i);
 			}
 		}
 	}
@@ -77,7 +77,7 @@ public class S0C {
 		}
 	}
 	
-	public void innerLoop(Node i, Stack<Node> stack){
+	public void innerLoop(Node i){
 
 		//DEF of i
 		//ArrayList<String> iDEF = i.getDef();
@@ -89,7 +89,7 @@ public class S0C {
 		Stack<Node> successors = new Stack<Node>();
 		if(iEdges != null & i != criterionNode){ //edges not null, don't go past criterion
 			successors.addAll(iEdges); //add the successors of i, also to stack
-			stack.addAll(iEdges);
+			//stack.addAll(iEdges);
 		}
 		outerLoop(i, successors);
 	}
