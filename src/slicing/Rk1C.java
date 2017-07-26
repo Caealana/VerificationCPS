@@ -57,6 +57,7 @@ public class Rk1C {
 	}
 	
 	public void buildRk1C(){
+		//node 8 not being included?
 		//need to build up Rk1C for each branch node used as slicing criterion
 		Set<Node> branchNodes = BkC.getBkCSet();
 		Object[] branchNodesArr = branchNodes.toArray();
