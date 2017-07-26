@@ -11,6 +11,7 @@ import graphRepresentation.Node;
 public class BkC {
 	//branch statements. exist such that there is
 	//a node within its set of INFL and that same node is in S0C/SkC
+	//this BkC doesn't do a pass through cfg, just takes list of branch statements and their INFL sets
 	S0C S0C;
 	ControlFlowGraph cfg;
 	Set<Node> S0CSet;
