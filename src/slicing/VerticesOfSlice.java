@@ -48,7 +48,9 @@ public class VerticesOfSlice {
 		WorkList = V; //initial WorkList is V
 		while(WorkList.isEmpty() == false){
 			//select and remove a vertex v from WorkList
+			Vertice current = WorkList.get(WorkList.size()-1); //get last item in WorkList
 			
+			//remove vertice from worklist at end
 		}
 		return null;
 	}
