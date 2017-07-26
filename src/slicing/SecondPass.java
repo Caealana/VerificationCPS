@@ -3,6 +3,7 @@ package slicing;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 
 import graphRepresentation.ControlFlowGraph;
@@ -14,54 +15,67 @@ public class SecondPass {
 	Rk1C Rk1C;
 	Node cNode;
 	S0C S0C;
+	R0C R0C;
 	ArrayList<String> cVars;
 	ControlFlowGraph cfg;
 	HashMap<Node, List<Node>> edges;
 	HashMap<Node, List<Node>> revEdges;
-	public SecondPass(Node cNode, ArrayList<String> cVars, ControlFlowGraph cfg, S0C S0C){
-		this.cNode = cNode;
-		this.cVars = cVars;
+	public SecondPass(Node cNode, ArrayList<String> cVars, ControlFlowGraph cfg, S0C S0C, R0C R0C){
+		this.cNode = null;
+		this.cVars = null;
 		this.cfg = cfg;
 		this.edges = this.cfg.getEdges();
 		this.revEdges = this.cfg.getReversedEdges();
 		this.S0C = S0C;
-		this.BkC = new BkC(S0C, cfg);
+		this.R0C = R0C;
+		this.BkC = new BkC(S0C, this.cfg);
+		this.Rk1C = new Rk1C(this.cfg, this.BkC, this.R0C, this.cNode, this.cVars);
+		this.Sk1C = new Sk1C(cfg, cNode, this.cfg.getStartNode(), BkC, Rk1C);
 	}
 	
 	public Rk1C getRk1C(){
 		return this.Rk1C;
 	}
 	
-	public S0C getS0C(){
-		return this.S0C;
+	public Sk1C getSk1C(){
+		return this.Sk1C;
+	}
+	
+	public BkC getBkC(){
+		return this. BkC;
 	}
 	
 	public void dfsSecondPass(){
 		this.BkC.buildBkC();
-		Stack<Node> stack = new Stack<Node>(); //dfs stack
-		HashMap<Node, List<Node>> revEdges = cfg.getReversedEdges();
-		ArrayList<Node> visited = new ArrayList<Node>();
-		R0C.case1a(); //set base case - initial criterion node for R0C
 		//add all the edges of the criterion node to the stack
-		List<Node> criterionEdges = revEdges.get(cNode);
-		stack.addAll(criterionEdges);
-		visited.add(cNode);
-		while(stack.isEmpty() == false){
-			Node i = stack.pop();
-			if(visited.contains(i) == false){ //node hasn't been visited yet
-				//finish building R0C sets
-				R0C.case2a(i);
-				R0C.case2b(i);
-				//while doing that, do S0C
-				S0C.innerLoop(i);
-				//add edges to stack
-				List<Node> iEdges = revEdges.get(i);
-				if(iEdges != null){ //edges not null, don't go past criterion
-					stack.addAll(iEdges); //add the successors of i, also to stack
-					//stack.addAll(iEdges);
+
+		Set<Node> branchNodes = BkC.getBkCSet();
+		Object[] branchNodesArr = branchNodes.toArray();
+		for(int k = 0; k < branchNodesArr.length; k++){
+			this.cNode = (Node) branchNodesArr[k];
+			this.cVars = cNode.getRef();
+			//build R0CSet through backwards dfs
+			Stack<Node> stack = new Stack<Node>();
+			Rk1C.case1a(cNode, cVars); //set base case - initial criterion node
+			//add all the edges of the criterion node to the stack
+			List<Node> criterionEdges = revEdges.get(cNode);
+			stack.addAll(criterionEdges);
+			ArrayList<Node> visited = new ArrayList<Node>(); //keep track of the visited nodes
+			while(stack.isEmpty() == false){ //while there are still more nodes/edges to go through
+				Node i = stack.pop();
+				if(visited.contains(i) == false){ //if current node hasn't been visited yet
+					//add the edges to stack to explore next
+					List<Node> connectedNodes = revEdges.get(i);
+					if(connectedNodes != null){ //if we actually have edges to add
+						stack.addAll(connectedNodes);
+					}
 				}
+				//node i -> node j edge
+				Rk1C.case2a(i); //weiser 2a for adding vars to R0C set
+				Rk1C.case2b(i); //weiser 2b
+				Sk1C.innerLoop(i);
+				
 			}
-			
 		}
 	}
 	

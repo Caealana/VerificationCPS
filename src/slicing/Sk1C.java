@@ -37,49 +37,66 @@ public class Sk1C{
 	
 	public void buildSk1C(){
 		//node i, if DEF(i) intersection R0C(j) is not empty.
-				//j is every successor node to i
-				//dfs to go through every node
-				Stack<Node> stack = new Stack<Node>();
-				stack.push(start);
-				ArrayList<Node> visited = new ArrayList<Node>();
-				while(stack.isEmpty() == false){
-					Node i = stack.pop();
-					if(visited.contains(i) == false){ //Only check new nodes
-						//set this node as visited
-						visited.add(i);
-						//DEF of i
-						ArrayList<String> iDEF = i.getDef();
-						HashSet<String> iDEFSet = new HashSet<String>(iDEF);
-						System.out.println("i node we are checking: " + i);
-						System.out.println("DEF(i) in buildS0C: " + iDEFSet);
-						List<Node> iEdges = edges.get(i);
-						//another dfs - to go through the successor nodes
-						Stack<Node> successors = new Stack<Node>();
-						if(iEdges != null & i != criterionNode){ //edges not null, don't go past criterion
-							successors.addAll(iEdges); //add the successors of i, also to stack
-							stack.addAll(iEdges);
-						}
-						while(successors.isEmpty() == false){ //while this current node still has successors to check
-							Node j = successors.pop();
-							HashMap<Node, Set<String>> Rk1CSet = Rk1C.getRk1CSet();
-							//System.out.println("R0C in innerloop b4 get j: " + R0C.getR0CSet());
-							Set<String> jRk1C = Rk1CSet.get(j);
-							if(jRk1C != null & iDEFSet != null){ //can't intersect null
-								iDEFSet.retainAll(jRk1C); //INTERSECTIOn of Def(i) R0C(j)
-								//System.out.println("R0CSet: " + R0CSet);
-								//System.out.println("intersection of R0Cj and DEFi: " + jR0C);
-								if(iDEFSet.isEmpty() == false){ //intersection not empty
-									Sk1CSet.add(i); //add node i to set of S0C
-									break; //don't need to check other successors
-								}
-								//add forward edges of this successor for next generation successors
-								List<Node> jEdges = edges.get(j);
-								if(jEdges != null & j!= criterionNode){ //don't want to go past criterionNode?
-									successors.addAll(jEdges);
-								}
-							}
-						}
-					}
+		//j is every successor node to i
+		//dfs to go through every node
+		Stack<Node> stack = new Stack<Node>();
+		stack.push(start);
+		ArrayList<Node> visited = new ArrayList<Node>();
+		while(stack.isEmpty() == false){
+			Node i = stack.pop();
+			if(visited.contains(i) == false){ //Only check new nodes
+				//set this node as visited
+				visited.add(i);
+				innerLoop(i);
+				//add edges of i to stack
+				List<Node> iEdges = edges.get(i);
+				if(iEdges != null){
+					stack.addAll(iEdges);
 				}
 			}
+		}
+	}
+	
+	public void innerLoop(Node i){
+
+		//DEF of i
+		//ArrayList<String> iDEF = i.getDef();
+		//HashSet<String> iDEFSet = new HashSet<String>(iDEF);
+		//System.out.println("i node we are checking: " + i);
+		//System.out.println("DEF(i) in buildS0C: " + iDEFSet);
+		List<Node> iEdges = edges.get(i);
+		//another dfs - to go through the successor nodes
+		Stack<Node> successors = new Stack<Node>();
+		if(iEdges != null & i != criterionNode){ //edges not null, don't go past criterion
+			successors.addAll(iEdges); //add the successors of i, also to stack
+			//stack.addAll(iEdges);
+		}
+		outerLoop(i, successors);
+	}
+	
+	//compare DEF(i) R0C(j)
+	public void outerLoop(Node i, Stack<Node> successors){
+		ArrayList<String> iDEF = i.getDef();
+		HashSet<String> iDEFSet = new HashSet<String>(iDEF);
+		while(successors.isEmpty() == false){ //while this current node still has successors to check
+			Node j = successors.pop();
+			HashMap<Node, Set<String>> R0CSet = Rk1C.getRk1CSet();
+			//System.out.println("R0C in innerloop b4 get j: " + R0C.getR0CSet());
+			Set<String> jR0C = R0CSet.get(j);
+			if(jR0C != null & iDEFSet != null){ //can't intersect null
+				iDEFSet.retainAll(jR0C); //INTERSECTIOn of Def(i) R0C(j)
+				//System.out.println("R0CSet: " + R0CSet);
+				//System.out.println("intersection of R0Cj and DEFi: " + jR0C);
+				if(iDEFSet.isEmpty() == false){ //intersection not empty
+					Sk1CSet.add(i); //add node i to set of S0C
+					break; //don't need to check other successors
+				}
+				//add forward edges of this successor for next generation successors
+				List<Node> jEdges = edges.get(j);
+				if(jEdges != null & j!= criterionNode){ //don't want to go past criterionNode?
+					successors.addAll(jEdges);
+				}
+			}
+		}
+	}
 }

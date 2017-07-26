@@ -23,12 +23,12 @@ public class Rk1C {
 	HashMap<Node, List<Node>> edges;
 	HashMap<Node, List<Node>> revEdges;
 	HashMap<Node, Set<String>> Rk1CSet;
-	Node criterionNode;
-	ArrayList<String> criterionVars;
 	R0C R0C;
 	HashMap<Node, Set<String>> R0CSet;
+	Node cNode;
+	ArrayList<String> cVars;
 	
-	public Rk1C(ControlFlowGraph cfg, BkC BkC, R0C R0C){
+	public Rk1C(ControlFlowGraph cfg, BkC BkC, R0C R0C, Node cNode, ArrayList<String> cVars){
 		this.BkC = BkC;
 		this.cfg = cfg;
 		this.edges = cfg.getEdges();
@@ -36,6 +36,8 @@ public class Rk1C {
 		this.R0C = R0C;
 		this.R0CSet = R0C.getR0CSet();
 		this.Rk1CSet = new HashMap<Node, Set<String>>();
+		this.cVars = null;
+		this.cNode = null;
 		/*
 		//copy over all the values from R0CSet into Rk1CSet
 		//source for iterating through hashmap: https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
@@ -59,13 +61,13 @@ public class Rk1C {
 		Set<Node> branchNodes = BkC.getBkCSet();
 		Object[] branchNodesArr = branchNodes.toArray();
 		for(int k = 0; k < branchNodesArr.length; k++){
-			this.criterionNode = (Node) branchNodesArr[k];
-			this.criterionVars = criterionNode.getRef();
+			this.cNode = (Node) branchNodesArr[k];
+			this.cVars = cNode.getRef();
 			//build R0CSet through backwards dfs
 			Stack<Node> stack = new Stack<Node>();
-			case1a(); //set base case - initial criterion node
+			case1a(cNode, cVars); //set base case - initial criterion node
 			//add all the edges of the criterion node to the stack
-			List<Node> criterionEdges = revEdges.get(criterionNode);
+			List<Node> criterionEdges = revEdges.get(cNode);
 			stack.addAll(criterionEdges);
 			ArrayList<Node> visited = new ArrayList<Node>(); //keep track of the visited nodes
 			while(stack.isEmpty() == false){ //while there are still more nodes/edges to go through
@@ -86,15 +88,12 @@ public class Rk1C {
 	}
 	
 	
-	public void case1a(){
+	public void case1a(Node cNode, ArrayList<String> cVars){
 		//current node is criterion node. set criterion vars for its R0CSet
-		Set<String> criterionVarsSet = new HashSet<String>(criterionVars); //turn criterionvars to a set from arraylist
-		System.out.println("criterionNode: " + criterionNode);
-		System.out.println("criterionVarsSet: " + criterionVarsSet);
+		Set<String> criterionVarsSet = new HashSet<String>(cVars); //turn criterionvars to a set from arraylist
 		if(criterionVarsSet != null){
 			//insert new values into Rk1C
-			Rk1CSet.put(criterionNode, criterionVarsSet);
-			System.out.println("criterionVarsSet: " + criterionVarsSet);
+			Rk1CSet.put(cNode, criterionVarsSet);
 		}
 	}
 	
