@@ -9,6 +9,7 @@
 (7)	i := i + 1
 (8) write(sum);
 (9) write(product);
+(10) stop;
  */
 package evaluation;
 
@@ -23,11 +24,17 @@ import java.util.List;
 import java.util.Set;
 
 public class CFGSequential {
+	ControlFlowGraph cfg;
+	
 	public CFGSequential(){
-		
+		this.cfg = buildCFG();
 	}
 	
-	public void buildCFG(){
+	public ControlFlowGraph getCFG(){
+		return this.cfg;
+	}
+	
+	public ControlFlowGraph buildCFG(){
 		int nodeCount = 0;
 		HashMap<Node, List<Node>> edges = new HashMap<Node, List<Node>>();
 		Node start = new Node(true); //node 0
@@ -74,30 +81,33 @@ public class CFGSequential {
 		Node n6 = new Node("assign", ref, def, 6);
 		nodeCount++;
 		
+		//i = i + 1
 		ref = new ArrayList<String>();
 		def = new ArrayList<String>();
 		ref.add("i");
 		def.add("i");
-		Node n8 = new Node("assign", ref, def, 7);
+		Node n7 = new Node("assign", ref, def, 7);
 		nodeCount++;
 		
+		//write(sum)
 		ref = new ArrayList<String>();
 		def = new ArrayList<String>();
 		ref.add("sum");
 		def.add("sum");
+		Node n8 = new Node("assign", ref, def, 8);
+		nodeCount++;
+		
+		//write(product)
+		ref = new ArrayList<String>();
+		def = new ArrayList<String>();
+		ref.add("product");
+		def.add("product");
 		Node n9 = new Node("assign", ref, def, 9);
 		nodeCount++;
 		
 		ref = new ArrayList<String>();
 		def = new ArrayList<String>();
-		ref.add("product");
-		def.add("product");
-		Node n10 = new Node("assign", ref, def, 10);
-		nodeCount++;
-		
-		ref = new ArrayList<String>();
-		def = new ArrayList<String>();
-		Node n11 = new Node("stop", ref, def, 11);
+		Node n10 = new Node("stop", ref, def, 10);
 		nodeCount++;
 		
 		List<Node> children = new ArrayList<Node>();
@@ -122,7 +132,6 @@ public class CFGSequential {
 		
 		children = new ArrayList<Node>();
 		children.add(n6);
-		children.add(n9);
 		edges.put(n5, children);
 		
 		children = new ArrayList<Node>();
@@ -141,10 +150,6 @@ public class CFGSequential {
 		children.add(n10);
 		edges.put(n9, children);
 		
-		children = new ArrayList<Node>();
-		children.add(n11);
-		edges.put(n10, children);
-		
 		//get dep lists
 		ControlFlowGraph cfg = new ControlFlowGraph(edges);
 		cfg.setStartNode(start);
@@ -153,5 +158,6 @@ public class CFGSequential {
 		boolean[] visited = new boolean[1000];
 		ArrayList<String> criterionVars = new ArrayList<String>();
 		criterionVars.add("product");
+		return cfg;
 	}
 }
