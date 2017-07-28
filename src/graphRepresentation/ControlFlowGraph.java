@@ -7,6 +7,7 @@ public class ControlFlowGraph {
 	private int nodeCount;
 	private Set<BranchNode> branchNodes;
 	private Node startNode;
+	private Node endNode;
 	
 	public ControlFlowGraph() {
 		edges = new HashMap<Node, List<Node>>();
@@ -22,6 +23,14 @@ public class ControlFlowGraph {
 	
 	public HashMap<Node, List<Node>> getEdges() {
 		return edges;
+	}
+	
+	public void setEndNode(Node end){
+		this.endNode = end;
+	}
+	
+	public Node getEndNode(){
+		return endNode;
 	}
 	
 	public void setStartNode(Node start){

@@ -30,6 +30,7 @@ public class BkC {
 	
 	public void buildBkC(){
 		Set<BranchNode> branches = cfg.getBranchNodes();
+		System.out.println("branch node set: " + branches);
 		Object[] branchesArr = branches.toArray();
 		//go through branch statements, get INFL
 		for(int k = 0; k < branchesArr.length; k++){

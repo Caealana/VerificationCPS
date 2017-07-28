@@ -84,7 +84,9 @@ public class SecondPass {
 		Rk1C.case1a(cNode, bNodeVars);
 		List<Node> criterionEdges = revEdges.get(cNode);
 		Stack<Node> stack = new Stack<Node>();
-		stack.addAll(criterionEdges);
+		if(criterionEdges != null){
+			stack.addAll(criterionEdges);
+		}
 		ArrayList<Node> visited = new ArrayList<Node>(); //keep track of the visited nodes
 		while(stack.isEmpty() == false){ //while there are still more nodes/edges to go through
 			Node i = stack.pop();

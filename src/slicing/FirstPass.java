@@ -42,7 +42,9 @@ public class FirstPass {
 		R0C.case1a(); //set base case - initial criterion node for R0C
 		//add all the edges of the criterion node to the stack
 		List<Node> criterionEdges = revEdges.get(cNode);
-		stack.addAll(criterionEdges);
+		if(criterionEdges != null){
+			stack.addAll(criterionEdges);
+		}
 		visited.add(cNode);
 		while(stack.isEmpty() == false){
 			Node i = stack.pop();

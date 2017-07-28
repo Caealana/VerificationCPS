@@ -153,6 +153,7 @@ public class CFGSequential {
 		//get dep lists
 		ControlFlowGraph cfg = new ControlFlowGraph(edges);
 		cfg.setStartNode(start);
+		cfg.setEndNode(n10);
 		HashMap<String, Set<Object>> depList = new HashMap<String, Set<Object>>();
 		Set<Integer> slice = new HashSet<Integer>();
 		boolean[] visited = new boolean[1000];

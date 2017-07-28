@@ -166,6 +166,7 @@ public class CFGLoops {
 		ControlFlowGraph cfg = new ControlFlowGraph(edges);
 		cfg.setStartNode(start);
 		cfg.addBranchNode(n5);
+		cfg.setEndNode(n11);
 		HashMap<String, Set<Object>> depList = new HashMap<String, Set<Object>>();
 		Set<Integer> slice = new HashSet<Integer>();
 		boolean[] visited = new boolean[1000];

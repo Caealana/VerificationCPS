@@ -195,9 +195,14 @@ public class CFGIf {
 		children.add(n13);
 		edges.put(n12, children);
 		
+		children = new ArrayList<Node>();
+		children.add(stop);
+		edges.put(n13, children);
+		
 		//get dep lists
 		ControlFlowGraph cfg = new ControlFlowGraph(edges);
 		cfg.setStartNode(start);
+		cfg.setEndNode(stop);
 		cfg.addBranchNode(n5);
 		HashMap<String, Set<Object>> depList = new HashMap<String, Set<Object>>();
 		Set<Integer> slice = new HashSet<Integer>();
