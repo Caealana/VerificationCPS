@@ -70,9 +70,12 @@ public class TimeEvaluation {
 		System.out.println("Sk1C set in secondpasstest: " + spTest.getSk1C().getSk1CSet());
 		slice.addAll(spTest.getBkC().getBkCSet());
 		slice.addAll(spTest.getSk1C().getSk1CSet());
-		//run dfs down only the slice nodes, print out totaltime taken
+		//create new cfg from slice, create DFS for new cfg
+		CFGFromSlice seqSlicedCFG = new CFGFromSlice(slice, CFGSequential.getCFG());
+		ControlFlowGraph newSeqCFG = seqSlicedCFG.buildCFG();
+		DFS newSeqDFS = new DFS(newSeqCFG);
 		startTime = System.nanoTime();
-		dfsSequential.runSlicedDFS(slice);
+		newSeqDFS.runDFS();
 		endTime = System.nanoTime();
 		totalTime = endTime - startTime;
 		System.out.println("Time DFS takes to run on sliced sequential code cfg: " + totalTime);
@@ -95,15 +98,18 @@ public class TimeEvaluation {
 		System.out.println("Sk1C set in secondpasstest: " + spTest.getSk1C().getSk1CSet());
 		sliceIf.addAll(spTest.getBkC().getBkCSet());
 		sliceIf.addAll(spTest.getSk1C().getSk1CSet());
-		//run dfs down only the slice nodes, print out totaltime taken
+		//create new cfg from slice, create DFS for new cfg
+		CFGFromSlice IfSlicedCFG = new CFGFromSlice(sliceIf, IfCFG);
+		ControlFlowGraph newIfCFG = IfSlicedCFG.buildCFG();
+		DFS newIfDFS = new DFS(newIfCFG);
 		startTime = System.nanoTime();
-		dfsSequential.runSlicedDFS(slice);
+		newIfDFS.runDFS();
 		endTime = System.nanoTime();
 		totalTime = endTime - startTime;
 		System.out.println("Time DFS takes to run on sliced code with if statement " + totalTime);
 		
 		//CFGLoops	
-		//first pass
+		//first pass - weiser's alg
 		endNode = CFGLoops.getCFG().getEndNode();
 		ControlFlowGraph LoopsCFG = CFGLoops.getCFG();
 		//System.out.println("CFG if branch nodes: " + IfCFG.getBranchNodes());
@@ -111,18 +117,21 @@ public class TimeEvaluation {
 		fpTest.dfsFirstPass();
 		System.out.println("R0C Set in firstpasstest: " + fpTest.getR0C().getR0CSet());
 		System.out.println("S0C Set in firstpasstest: " + fpTest.getS0C().getS0CSet());
-		slice = fpTest.getS0C().getS0CSet();
+		Set<Node> sliceLoops = fpTest.getS0C().getS0CSet();
 		//Second Pass
 		spTest = new SecondPass(endNode, criterionVars, LoopsCFG, fpTest.getS0C(), fpTest.getR0C());
 		spTest.dfsSecondPass();
 		System.out.println("BkC Set in secondpasstest: " + spTest.getBkC().getBkCSet());
 		System.out.println("Rk1C set in secondpasstest: " + spTest.getRk1C().getRk1CSet());
 		System.out.println("Sk1C set in secondpasstest: " + spTest.getSk1C().getSk1CSet());
-		slice.addAll(spTest.getBkC().getBkCSet());
-		slice.addAll(spTest.getSk1C().getSk1CSet());
-		//run dfs down only the slice nodes, print out totaltime taken
+		sliceLoops.addAll(spTest.getBkC().getBkCSet());
+		sliceLoops.addAll(spTest.getSk1C().getSk1CSet());
+		//create new cfg from slice, create DFS for new cfg
+		CFGFromSlice LoopsSlicedCFG = new CFGFromSlice(sliceLoops, LoopsCFG);
+		ControlFlowGraph newLoopsCFG = LoopsSlicedCFG.buildCFG();
+		DFS newLoopsDFS = new DFS(newLoopsCFG);
 		startTime = System.nanoTime();
-		dfsSequential.runSlicedDFS(slice);
+		newLoopsDFS.runDFS();
 		endTime = System.nanoTime();
 		totalTime = endTime - startTime;
 		System.out.println("Time DFS takes to run on sliced code with loops: " + totalTime);

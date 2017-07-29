@@ -1,16 +1,8 @@
-//simple example code with if statement to test slicing
-/*(1) read(n);
-(2) i := 1;
-(3) sum := 0;
-(4) product := 1;
-(5) if i <= n do
-(6) 	sum := sum + 1;
-(7)		i := i + 1
-(8) 	product := product * 1
-(9) write(sum);
-(10)write(product);*/
-//we are acting as if/else is 1 branch statement together
-package evaluation;
+package test;
+
+import graphRepresentation.BranchNode;
+import graphRepresentation.ControlFlowGraph;
+import graphRepresentation.Node;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,22 +10,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import graphRepresentation.BranchNode;
-import graphRepresentation.ControlFlowGraph;
-import graphRepresentation.Node;
+import slicing.FirstPass;
+import slicing.SecondPass;
 
-public class CFGIf {
-	ControlFlowGraph cfg;
-	
-	public CFGIf(){
-		this.cfg = buildCFG();
-	}
-	
-	public ControlFlowGraph getCFG(){
-		return this.cfg;
-	}
-	
-	ControlFlowGraph buildCFG(){
+public class TestGuidedDFS {
+
+	public static void main(String[] args) {
 		int nodeCount = 0;
 		HashMap<Node, List<Node>> edges = new HashMap<Node, List<Node>>();
 		Node start = new Node(true); //node 0
@@ -42,7 +24,7 @@ public class CFGIf {
 		ArrayList<String> ref = new ArrayList<String>();
 		ArrayList<String> def = new ArrayList<String>();
 		def.add("n");
-		Node n1 = new Node("assign", ref, def, 1);
+		Node n1 = new Node("assign", ref, def, 1); //assign as node type?
 		nodeCount++;
 		
 		ref = new ArrayList<String>();
@@ -99,19 +81,19 @@ public class CFGIf {
 		def = new ArrayList<String>();
 		ref.add("sum");
 		def.add("sum");
-		Node n9 = new Node("assign", ref, def, 12);
+		Node n9 = new Node("assign", ref, def, 9);
 		nodeCount++;
 		
 		ref = new ArrayList<String>();
 		def = new ArrayList<String>();
 		ref.add("product");
 		def.add("product");
-		Node n10 = new Node("assign", ref, def, 13);
+		Node n10 = new Node("assign", ref, def, 10);
 		nodeCount++;
 		
 		ref = new ArrayList<String>();
 		def = new ArrayList<String>();
-		Node stop = new Node("stop", ref, def, 14);
+		Node n11 = new Node("stop", ref, def, 11);
 		nodeCount++;
 		
 		List<Node> children = new ArrayList<Node>();
@@ -154,12 +136,14 @@ public class CFGIf {
 		children = new ArrayList<Node>();
 		children.add(n10);
 		edges.put(n9, children);
-
+		
+		children = new ArrayList<Node>();
+		children.add(n11);
+		edges.put(n10, children);
 		
 		//get dep lists
 		ControlFlowGraph cfg = new ControlFlowGraph(edges);
 		cfg.setStartNode(start);
-		cfg.setEndNode(stop);
 		cfg.addBranchNode(n5);
 		HashMap<String, Set<Object>> depList = new HashMap<String, Set<Object>>();
 		Set<Integer> slice = new HashSet<Integer>();
@@ -167,7 +151,19 @@ public class CFGIf {
 		ArrayList<String> criterionVars = new ArrayList<String>();
 		criterionVars.add("product");
 		
-		return cfg;
+		//first pass
+		FirstPass fpTest = new FirstPass(n11, criterionVars, cfg);
+		fpTest.dfsFirstPass();
+		System.out.println("R0C Set in firstpasstest: " + fpTest.getR0C().getR0CSet());
+		System.out.println("S0C Set in firstpasstest: " + fpTest.getS0C().getS0CSet());
+		
+		//Second Pass
+		SecondPass spTest = new SecondPass(n11, criterionVars, cfg, fpTest.getS0C(), fpTest.getR0C());
+		spTest.dfsSecondPass();
+		System.out.println("BkC Set in secondpasstest: " + spTest.getBkC().getBkCSet());
+		System.out.println("Rk1C set in secondpasstest: " + spTest.getRk1C().getRk1CSet());
+		System.out.println("Sk1C set in secondpasstest: " + spTest.getSk1C().getSk1CSet());
+
 	}
-	
+
 }

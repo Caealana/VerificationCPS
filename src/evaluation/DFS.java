@@ -26,10 +26,21 @@ public class DFS {
 		ArrayList<Node> visited = new ArrayList<Node>();
 		while(stack.isEmpty() == false){
 			Node current = stack.pop();
+			visited.add(current);
+			//System.out.println("Node current: " + current);
 			if(visited.contains(current) == false){
 				List<Node> currentEdges = edges.get(current);
 				if(currentEdges != null){
-					stack.addAll(currentEdges);
+					//System.out.println("currentEdges trying to add: " + currentEdges);
+					ListIterator<Node> currentEdgesIt = currentEdges.listIterator();
+					//we only want to add to the stack nodes we havent visited already
+					while(currentEdgesIt.hasNext() == true){
+						Node possibleEdge = currentEdgesIt.next();
+						if(visited.contains(possibleEdge) == false){
+							stack.add(possibleEdge);
+						}
+					}
+					//stack.addAll(currentEdges);
 				}
 			}
 			

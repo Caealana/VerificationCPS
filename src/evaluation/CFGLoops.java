@@ -9,7 +9,7 @@
 (6) 	sum := sum + 1;
 (7) 	product := product * 1
 (8)		i := i + 1
-		end;
+	end;
 (9) write(sum);
 (10)write(product);
  */
@@ -152,6 +152,7 @@ public class CFGLoops {
 		
 		children = new ArrayList<Node>();
 		children.add(n9);
+		children.add(n5);
 		edges.put(n8, children);
 		
 		children = new ArrayList<Node>();
