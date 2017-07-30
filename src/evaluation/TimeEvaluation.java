@@ -59,14 +59,14 @@ public class TimeEvaluation {
 		ControlFlowGraph sequentialCFG = CFGSequential.getCFG();
 		FirstPass fpTest = new FirstPass(endNode, criterionVars, sequentialCFG);
 		fpTest.dfsFirstPass();
-		System.out.println("R0C Set in firstpasstest: " + fpTest.getR0C().getR0CSet());
+		//System.out.println("R0C Set in firstpasstest: " + fpTest.getR0C().getR0CSet());
 		System.out.println("S0C Set in firstpasstest: " + fpTest.getS0C().getS0CSet());
 		Set<Node> slice = fpTest.getS0C().getS0CSet();
 		//Second Pass
 		SecondPass spTest = new SecondPass(endNode, criterionVars, sequentialCFG, fpTest.getS0C(), fpTest.getR0C());
 		spTest.dfsSecondPass();
-		System.out.println("BkC Set in secondpasstest: " + spTest.getBkC().getBkCSet());
-		System.out.println("Rk1C set in secondpasstest: " + spTest.getRk1C().getRk1CSet());
+		//System.out.println("BkC Set in secondpasstest: " + spTest.getBkC().getBkCSet());
+		//System.out.println("Rk1C set in secondpasstest: " + spTest.getRk1C().getRk1CSet());
 		System.out.println("Sk1C set in secondpasstest: " + spTest.getSk1C().getSk1CSet());
 		slice.addAll(spTest.getBkC().getBkCSet());
 		slice.addAll(spTest.getSk1C().getSk1CSet());
