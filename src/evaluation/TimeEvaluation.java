@@ -98,6 +98,7 @@ public class TimeEvaluation {
 		System.out.println("Sk1C set in secondpasstest: " + spTest.getSk1C().getSk1CSet());
 		sliceIf.addAll(spTest.getBkC().getBkCSet());
 		sliceIf.addAll(spTest.getSk1C().getSk1CSet());
+		System.out.println("sliceIF: " + sliceIf);
 		//create new cfg from slice, create DFS for new cfg
 		CFGFromSlice IfSlicedCFG = new CFGFromSlice(sliceIf, IfCFG);
 		ControlFlowGraph newIfCFG = IfSlicedCFG.buildCFG();

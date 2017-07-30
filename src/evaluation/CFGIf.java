@@ -99,19 +99,19 @@ public class CFGIf {
 		def = new ArrayList<String>();
 		ref.add("sum");
 		def.add("sum");
-		Node n9 = new Node("assign", ref, def, 12);
+		Node n9 = new Node("assign", ref, def, 9);
 		nodeCount++;
 		
 		ref = new ArrayList<String>();
 		def = new ArrayList<String>();
 		ref.add("product");
 		def.add("product");
-		Node n10 = new Node("assign", ref, def, 13);
+		Node n10 = new Node("assign", ref, def, 10);
 		nodeCount++;
 		
 		ref = new ArrayList<String>();
 		def = new ArrayList<String>();
-		Node stop = new Node("stop", ref, def, 14);
+		Node stop = new Node("stop", ref, def, 11);
 		nodeCount++;
 		
 		List<Node> children = new ArrayList<Node>();
@@ -154,6 +154,10 @@ public class CFGIf {
 		children = new ArrayList<Node>();
 		children.add(n10);
 		edges.put(n9, children);
+		
+		children = new ArrayList<Node>();
+		children.add(stop);
+		edges.put(n10, children);
 
 		
 		//get dep lists

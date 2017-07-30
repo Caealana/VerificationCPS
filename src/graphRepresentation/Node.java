@@ -2,7 +2,7 @@ package graphRepresentation;
 
 import java.util.*;
 
-public class Node implements Comparator<Node>{
+public class Node implements Comparator<Node>, Comparable<Node>{
 	private String type;	// start, stop, assign, if, else, end
 	private ArrayList<String> ref, def;
 	private List<Integer> blocksInside;
@@ -86,5 +86,11 @@ public class Node implements Comparator<Node>{
 	public int compare(Node n1, Node n2) {
 		// TODO Auto-generated method stub
 		return Integer.compare(n1.getIndex(), n2.getIndex());
+	}
+
+	@Override
+	public int compareTo(Node n) {
+		// TODO Auto-generated method stub
+		return (Integer.compare(this.index, n.getIndex()));
 	}
 }
