@@ -67,6 +67,7 @@ public class SecondPass {
 			//this builds Rk1C from branch node up, we also want to include statements within the if/loop
 			while(stack.isEmpty() == false){ //while there are still more nodes/edges to go through
 				Node i = stack.pop();
+				visited.add(i);
 				if(visited.contains(i) == false){ //if current node hasn't been visited yet
 					//add the edges to stack to explore next
 					List<Node> connectedNodes = revEdges.get(i);
@@ -90,6 +91,7 @@ public class SecondPass {
 		ArrayList<Node> visited = new ArrayList<Node>(); //keep track of the visited nodes
 		while(stack.isEmpty() == false){ //while there are still more nodes/edges to go through
 			Node i = stack.pop();
+			visited.add(i);
 			if(visited.contains(i) == false){ //if current node hasn't been visited yet
 				//add the edges to stack to explore next
 				List<Node> connectedNodes = revEdges.get(i);

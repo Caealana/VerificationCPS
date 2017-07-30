@@ -4,6 +4,7 @@ package slicing;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Stack;
 
 import graphRepresentation.ControlFlowGraph;
@@ -49,6 +50,9 @@ public class FirstPass {
 		while(stack.isEmpty() == false){
 			Node i = stack.pop();
 			if(visited.contains(i) == false){ //node hasn't been visited yet
+				visited.add(i);
+				//System.out.println("Node i : " + i);
+				//System.out.println("stack: " + stack);
 				//finish building R0C sets
 				R0C.case2a(i);
 				R0C.case2b(i);
@@ -56,9 +60,15 @@ public class FirstPass {
 				S0C.innerLoop(i);
 				//add edges to stack
 				List<Node> iEdges = revEdges.get(i);
-				if(iEdges != null){ //edges not null, don't go past criterion
-					stack.addAll(iEdges); //add the successors of i, also to stack
-					//stack.addAll(iEdges);
+				if(iEdges != null){
+					ListIterator<Node> iEdgesIterator = iEdges.listIterator();
+					while(iEdgesIterator.hasNext()){ //edges not null, don't go past criterion
+						Node toAdd = iEdgesIterator.next();
+						if(visited.contains(toAdd) == false){
+							stack.add(toAdd); //add the successors of i, also to stack
+						//stack.addAll(iEdges);
+						}
+					}
 				}
 			}
 			

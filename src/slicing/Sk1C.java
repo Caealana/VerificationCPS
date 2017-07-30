@@ -58,7 +58,6 @@ public class Sk1C{
 	}
 	
 	public void innerLoop(Node i){
-
 		//DEF of i
 		//ArrayList<String> iDEF = i.getDef();
 		//HashSet<String> iDEFSet = new HashSet<String>(iDEF);
@@ -71,6 +70,7 @@ public class Sk1C{
 			successors.addAll(iEdges); //add the successors of i, also to stack
 			//stack.addAll(iEdges);
 		}
+		System.out.println("Successors: " + successors);
 		outerLoop(i, successors);
 	}
 	
@@ -78,8 +78,10 @@ public class Sk1C{
 	public void outerLoop(Node i, Stack<Node> successors){
 		ArrayList<String> iDEF = i.getDef();
 		HashSet<String> iDEFSet = new HashSet<String>(iDEF);
+		ArrayList<Node> visited = new ArrayList<Node>();
 		while(successors.isEmpty() == false){ //while this current node still has successors to check
 			Node j = successors.pop();
+			visited.add(j);
 			HashMap<Node, Set<String>> R0CSet = Rk1C.getRk1CSet();
 			//System.out.println("R0C in innerloop b4 get j: " + R0C.getR0CSet());
 			Set<String> jR0C = R0CSet.get(j);
@@ -89,6 +91,7 @@ public class Sk1C{
 				//System.out.println("intersection of R0Cj and DEFi: " + jR0C);
 				if(iDEFSet.isEmpty() == false){ //intersection not empty
 					Sk1CSet.add(i); //add node i to set of S0C
+					//System.out.println("adding to Sk1C Set: " + i);
 					break; //don't need to check other successors
 				}
 				//add forward edges of this successor for next generation successors
