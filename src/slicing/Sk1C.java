@@ -78,8 +78,10 @@ public class Sk1C{
 	public void outerLoop(Node i, Stack<Node> successors){
 		ArrayList<String> iDEF = i.getDef();
 		HashSet<String> iDEFSet = new HashSet<String>(iDEF);
+		ArrayList<Node> visited = new ArrayList<Node>();
 		while(successors.isEmpty() == false){ //while this current node still has successors to check
 			Node j = successors.pop();
+			visited.add(j);
 			HashMap<Node, Set<String>> R0CSet = Rk1C.getRk1CSet();
 			//System.out.println("R0C in innerloop b4 get j: " + R0C.getR0CSet());
 			Set<String> jR0C = R0CSet.get(j);
